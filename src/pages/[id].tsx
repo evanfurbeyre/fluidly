@@ -1,39 +1,36 @@
-import type { NextPage } from 'next';
+import type { NextPage, GetStaticProps } from 'next';
 import Head from 'next/head';
 
 type CorProps = { children: string };
 const AddCor = ({ children }: CorProps) => (
-  <span className="rounded border border-green-300 bg-green-100 font-medium text-green-700">
+  <span className="rounded bg-green-100 font-medium text-green-700">
     {children}
   </span>
 );
 const DelCor = ({ children }: CorProps) => (
-  <span className="rounded border border-red-300 bg-red-100 font-medium text-red-700">
+  <span className="rounded bg-red-100 font-medium text-red-700">
     {children}
   </span>
 );
 
-const Correction: NextPage = () => {
+const Correction: NextPage = (props: any) => {
+  const { question, audio, transcripts } = props;
+
   return (
     <>
       <Head>
-        <title>Speak to Learn</title>
+        <title>Speaking Correction</title>
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto my-10 p-6">
-        <p className="mb-5 text-lg font-bold italic">
-          What do you remember about being 5 years old? TEST
+      <main className="container mx-auto my-10 max-w-xs p-6">
+        <p className="mb-5 text-xl font-bold italic text-gray-800">
+          {question}
         </p>
-        <h3>Original Audio:</h3>
-        <audio controls>
-          <source src="./audiofile3.mp3" type="audio/mp3" />
-        </audio>
-
-        <h3>Correction:</h3>
-        <audio controls>
-          <source src="./audiofile1.ogg" type="audio/ogg" />
+        <h3 className="font-semibold text-gray-800">Audio d&apos;origine:</h3>
+        <audio controls className="w-full">
+          <source src={audio.original} type="audio/mp3" />
         </audio>
 
         <p className="py-4">
@@ -48,29 +45,47 @@ const Correction: NextPage = () => {
           je me souviens <AddCor>de la</AddCor> <DelCor>le</DelCor> pause.
         </p>
 
-        <h3>Feedback:</h3>
-        <audio controls>
-          <source src="./audiofile4.ogg" type="audio/ogg" />
+        <h3 className="font-semibold text-gray-800">Correction:</h3>
+        <audio controls className="w-full">
+          <source src={audio.correction} type="audio/mp3" />
         </audio>
-        <p>
-          Bon travail, en tous cas, mes félicitations. J’attend votre prochain
-          audio avec impatience.
-        </p>
+
+        <h3 className="font-semibold text-gray-800">
+          Retour d&apos;information:
+        </h3>
+        <audio controls className="w-full">
+          <source src={audio.feedback} type="audio/mp3" />
+        </audio>
+        {/* <p>
+          {transcripts.feedback.results.transcripts.map((t: any) => (
+            <span key={t.transcript}>{t.transcript}</span>
+          ))}
+        </p> */}
       </main>
     </>
   );
 };
 
-export const getStaticProps = async () => {
+const server =
+  process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:3000'
+    : 'https://fluidly-evanfurbeyre.vercel.app';
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const res = await fetch(`${server}/api/${context?.params?.id}`);
+  const data = await res.json();
   return {
     props: {
-      id: '1',
+      ...data,
     },
   };
 };
 
 export const getStaticPaths = async () => {
-  return { paths: [{ params: { id: '1' } }], fallback: false };
+  const res = await fetch(`${server}/api`);
+  const ids = await res.json();
+  const paths = ids.map((id: string) => ({ params: { id } }));
+  return { paths, fallback: false };
 };
 
 export default Correction;

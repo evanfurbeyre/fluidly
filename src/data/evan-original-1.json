@@ -1,0 +1,585 @@
+{
+  "jobName": "Job1",
+  "accountId": "931743583355",
+  "results": {
+    "transcripts": [
+      {
+        "transcript": "quand j'avais cinq ans, je me souviens marcher à la station de bus pour aller à l'école. Je me souviens de ma ma professeure. Elle s'appelait Katie Johnson et je me souviens le comment dit-on dix quinze. Non, c'est ces Espagnols descanso. Je me souviens le pose"
+      }
+    ],
+    "items": [
+      {
+        "start_time": "1.63",
+        "end_time": "2.78",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "quand"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "2.79",
+        "end_time": "4.18",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "j'avais"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "4.48",
+        "end_time": "5.11",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "cinq"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "5.11",
+        "end_time": "5.78",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "ans"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": ","
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "7.98",
+        "end_time": "8.37",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "je"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "8.37",
+        "end_time": "8.57",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "me"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "8.57",
+        "end_time": "9.74",
+        "alternatives": [
+          {
+            "confidence": "0.9974",
+            "content": "souviens"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "12.79",
+        "end_time": "14.07",
+        "alternatives": [
+          {
+            "confidence": "0.2728",
+            "content": "marcher"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "14.99",
+        "end_time": "15.34",
+        "alternatives": [
+          {
+            "confidence": "0.9757",
+            "content": "à"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "15.34",
+        "end_time": "16.06",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "la"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "16.07",
+        "end_time": "16.85",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "station"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "16.85",
+        "end_time": "17.03",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "de"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "17.03",
+        "end_time": "17.79",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "bus"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "17.8",
+        "end_time": "18.59",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "pour"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "18.6",
+        "end_time": "19.47",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "aller"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "19.92",
+        "end_time": "20.17",
+        "alternatives": [
+          {
+            "confidence": "0.9996",
+            "content": "à"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "20.17",
+        "end_time": "20.96",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "l'école"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": "."
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "24.6",
+        "end_time": "24.89",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "Je"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "24.89",
+        "end_time": "25.06",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "me"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "25.06",
+        "end_time": "26.26",
+        "alternatives": [
+          {
+            "confidence": "0.9931",
+            "content": "souviens"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "27.94",
+        "end_time": "27.97",
+        "alternatives": [
+          {
+            "confidence": "0.581",
+            "content": "de"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "28.24",
+        "end_time": "29.0",
+        "alternatives": [
+          {
+            "confidence": "0.914",
+            "content": "ma"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "31.76",
+        "end_time": "32.12",
+        "alternatives": [
+          {
+            "confidence": "0.9521",
+            "content": "ma"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "32.12",
+        "end_time": "33.29",
+        "alternatives": [
+          {
+            "confidence": "0.7846",
+            "content": "professeure"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": "."
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "35.86",
+        "end_time": "36.31",
+        "alternatives": [
+          {
+            "confidence": "0.912",
+            "content": "Elle"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "36.31",
+        "end_time": "37.28",
+        "alternatives": [
+          {
+            "confidence": "0.7934",
+            "content": "s'appelait"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "37.62",
+        "end_time": "38.23",
+        "alternatives": [
+          {
+            "confidence": "0.3318",
+            "content": "Katie"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "38.23",
+        "end_time": "38.9",
+        "alternatives": [
+          {
+            "confidence": "0.4427",
+            "content": "Johnson"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "39.98",
+        "end_time": "40.79",
+        "alternatives": [
+          {
+            "confidence": "0.9904",
+            "content": "et"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "40.8",
+        "end_time": "41.15",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "je"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "41.15",
+        "end_time": "41.34",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "me"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "41.34",
+        "end_time": "42.4",
+        "alternatives": [
+          {
+            "confidence": "0.9908",
+            "content": "souviens"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "43.08",
+        "end_time": "44.18",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "le"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "44.32",
+        "end_time": "44.74",
+        "alternatives": [
+          {
+            "confidence": "0.999",
+            "content": "comment"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "44.74",
+        "end_time": "45.57",
+        "alternatives": [
+          {
+            "confidence": "0.9045",
+            "content": "dit-on"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "49.29",
+        "end_time": "49.58",
+        "alternatives": [
+          {
+            "confidence": "0.8911",
+            "content": "dix"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "49.58",
+        "end_time": "50.05",
+        "alternatives": [
+          {
+            "confidence": "0.5527",
+            "content": "quinze"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": "."
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "50.06",
+        "end_time": "50.83",
+        "alternatives": [
+          {
+            "confidence": "0.9991",
+            "content": "Non"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": ","
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "50.83",
+        "end_time": "51.29",
+        "alternatives": [
+          {
+            "confidence": "0.9277",
+            "content": "c'est"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "51.98",
+        "end_time": "52.31",
+        "alternatives": [
+          {
+            "confidence": "0.8488",
+            "content": "ces"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "52.31",
+        "end_time": "53.03",
+        "alternatives": [
+          {
+            "confidence": "0.7972",
+            "content": "Espagnols"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "54.01",
+        "end_time": "54.96",
+        "alternatives": [
+          {
+            "confidence": "0.9986",
+            "content": "descanso"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "alternatives": [
+          {
+            "confidence": "0.0",
+            "content": "."
+          }
+        ],
+        "type": "punctuation"
+      },
+      {
+        "start_time": "57.26",
+        "end_time": "57.51",
+        "alternatives": [
+          {
+            "confidence": "1.0",
+            "content": "Je"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "57.51",
+        "end_time": "57.64",
+        "alternatives": [
+          {
+            "confidence": "0.9991",
+            "content": "me"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "57.64",
+        "end_time": "58.07",
+        "alternatives": [
+          {
+            "confidence": "0.9039",
+            "content": "souviens"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "58.07",
+        "end_time": "58.28",
+        "alternatives": [
+          {
+            "confidence": "0.3239",
+            "content": "le"
+          }
+        ],
+        "type": "pronunciation"
+      },
+      {
+        "start_time": "58.28",
+        "end_time": "58.88",
+        "alternatives": [
+          {
+            "confidence": "0.427",
+            "content": "pose"
+          }
+        ],
+        "type": "pronunciation"
+      }
+    ]
+  },
+  "status": "COMPLETED"
+}
