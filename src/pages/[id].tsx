@@ -65,12 +65,10 @@ const Correction: NextPage = (props: any) => {
     </>
   );
 };
-
-// const server =
-//   process.env.NODE_ENV !== 'production'
-//     ? 'http://localhost:3000'
-//     : 'https://fluidly-evanfurbeyre.vercel.app';
-const server = 'http://localhost:3000';
+console.log('process.env.VERCEL_URL:', process.env.VERCEL_URL);
+const server = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000';
 console.log('server:', server);
 
 export const getStaticProps: GetStaticProps = async (context) => {
