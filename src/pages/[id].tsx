@@ -66,10 +66,12 @@ const Correction: NextPage = (props: any) => {
   );
 };
 
-const server =
-  process.env.NODE_ENV !== 'production'
-    ? 'http://localhost:3000'
-    : 'https://fluidly-evanfurbeyre.vercel.app';
+// const server =
+//   process.env.NODE_ENV !== 'production'
+//     ? 'http://localhost:3000'
+//     : 'https://fluidly-evanfurbeyre.vercel.app';
+const server = 'http://localhost:3000';
+console.log('server:', server);
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const res = await fetch(`${server}/api/${context?.params?.id}`);
