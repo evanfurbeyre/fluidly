@@ -1,17 +1,9 @@
 import type { NextPage } from "next"
-import { Data, data } from "../data/data"
+import { Data, data, RevisionFragment } from "../data/data"
 import Head from "next/head"
 
-type CorProps = { children: string }
-const AddCor = ({ children }: CorProps) => (
-  <span className="rounded bg-green-100 font-medium text-green-700">{children}</span>
-)
-const DelCor = ({ children }: CorProps) => (
-  <span className="rounded bg-red-100 font-medium text-red-700">{children}</span>
-)
-
 const Correction: NextPage<Data> = (props) => {
-  const { question, audio, lang } = props
+  const { question, audio, lang, revisions } = props
   const labels = sectionLabels[lang]
 
   return (
@@ -30,13 +22,7 @@ const Correction: NextPage<Data> = (props) => {
         </audio>
 
         <p className="py-4">
-          Quand j’avais cinq ans, je me souviens <AddCor>de</AddCor> marcher à la station de bus
-          pour aller à l’école. Je me souviens <AddCor>que</AddCor> ma professeur{" "}
-          <DelCor>, elle</DelCor> s’appelait Kathy Johnson.{" "}
-          <DelCor>
-            Je me souviens le… comment dit-on “descanso”, non c’est espagnol… le pause,
-          </DelCor>{" "}
-          je me souviens <AddCor>de la</AddCor> <DelCor>le</DelCor> pause.
+          <RevisionSection revisions={revisions} />
         </p>
 
         <h3 className="font-semibold text-gray-800">{labels.correction}</h3>
@@ -64,6 +50,31 @@ const sectionLabels = {
     correction: "Corrección",
     feedback: "Retroalimentación",
   },
+}
+
+const RevisionSection = ({ revisions }: { revisions: RevisionFragment[] }) => {
+  return (
+    <>
+      {revisions.map(({ content, type }, index) => {
+        switch (type) {
+          case "addition":
+            return (
+              <span key={index} className="mx-1 rounded bg-green-100 font-medium text-green-700">
+                {content}
+              </span>
+            )
+          case "deletion":
+            return (
+              <span key={index} className="mx-1 rounded bg-red-100 font-medium text-red-700">
+                {content}
+              </span>
+            )
+          default:
+            return <span key={index}>{content}</span>
+        }
+      })}
+    </>
+  )
 }
 
 export const getStaticProps = async (context: any) => {
