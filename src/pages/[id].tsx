@@ -72,19 +72,26 @@ const server = process.env.VERCEL_URL
 console.log('server:', server);
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch(`${server}/api/${context?.params?.id}`);
-  const data = await res.json();
+  // const res = await fetch(`${server}/api/${context?.params?.id}`);
+  // const data = await res.json();
   return {
     props: {
-      ...data,
+      question: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
+      audio: {
+        original: './evan-original-1.mp3',
+        correction: './evan-correction-1.mp3',
+        feedback: './evan-feedback-1.mp3',
+      },
+      transcripts: {},
     },
   };
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${server}/api`);
-  const ids = await res.json();
-  const paths = ids.map((id: string) => ({ params: { id } }));
+  // const res = await fetch(`${server}/api`);
+  // const ids = await res.json();
+  // const paths = ids.map((id: string) => ({ params: { id } }));
+  const paths = [{ params: { id: '1' } }];
   return { paths, fallback: false };
 };
 
