@@ -1,4 +1,5 @@
-import type { NextPage, GetStaticProps } from 'next';
+import type { NextPage } from 'next';
+import { data } from '../data/data';
 import Head from 'next/head';
 
 type CorProps = { children: string };
@@ -56,42 +57,20 @@ const Correction: NextPage = (props: any) => {
         <audio controls className="w-full">
           <source src={audio.feedback} type="audio/mp3" />
         </audio>
-        {/* <p>
-          {transcripts.feedback.results.transcripts.map((t: any) => (
-            <span key={t.transcript}>{t.transcript}</span>
-          ))}
-        </p> */}
       </main>
     </>
   );
 };
-console.log('process.env.VERCEL_URL:', process.env.VERCEL_URL);
-const server = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
-console.log('server:', server);
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  // const res = await fetch(`${server}/api/${context?.params?.id}`);
-  // const data = await res.json();
+export const getStaticProps = async (context: any) => {
+  const id = context.params?.id;
   return {
-    props: {
-      question: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
-      audio: {
-        original: './evan-original-1.mp3',
-        correction: './evan-correction-1.mp3',
-        feedback: './evan-feedback-1.mp3',
-      },
-      transcripts: {},
-    },
+    props: data[id],
   };
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${server}/api`);
-  const ids = await res.json();
-  const paths = ids.map((id: string) => ({ params: { id } }));
-  // const paths = [{ params: { id: '1' } }];
+  const paths = Object.keys(data).map((id: string) => ({ params: { id } }));
   return { paths, fallback: false };
 };
 
