@@ -88,10 +88,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths = async () => {
-  // const res = await fetch(`${server}/api`);
-  // const ids = await res.json();
-  // const paths = ids.map((id: string) => ({ params: { id } }));
-  const paths = [{ params: { id: '1' } }];
+  const res = await fetch(`${server}/api`);
+  const ids = await res.json();
+  const paths = ids.map((id: string) => ({ params: { id } }));
+  // const paths = [{ params: { id: '1' } }];
   return { paths, fallback: false };
 };
 
