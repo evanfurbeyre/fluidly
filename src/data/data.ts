@@ -1,17 +1,17 @@
 type Data = {
   [key: string]: {
-    question: string;
+    question: string
     audio: {
-      original: string;
-      correction: string;
-      feedback: string;
-    };
+      original: string
+      correction: string
+      feedback: string
+    }
     revision: {
-      content: string;
-      type: "original" | "addition" | "deletion";
-    }[];
-  };
-};
+      content: string
+      type: "original" | "addition" | "deletion"
+    }[]
+  }
+}
 
 export const data: Data = {
   "1": {
@@ -27,4 +27,4 @@ export const data: Data = {
       { content: "sample", type: "deletion" },
     ],
   },
-};
+}
