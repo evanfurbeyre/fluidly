@@ -23,9 +23,9 @@ export const data: Record<string, Data> = {
     lang: "fr",
     question: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
     audio: {
-      original: "evan-original-1.7",
-      correction: "evan-correction-1.7",
-      feedback: "evan-feedback-1.7",
+      original: "evan-original-1",
+      correction: "evan-correction-1",
+      feedback: "evan-feedback-1",
     },
     revisions: [
       {
@@ -82,9 +82,9 @@ export const data: Record<string, Data> = {
     lang: "es",
     question: "¿Cuál es tu rutina en la mañana?",
     audio: {
-      original: "./nate-original-1.mp3",
-      correction: "./evan-correction-1.mp3",
-      feedback: "./evan-feedback-1.mp3",
+      original: "nate-original-1",
+      correction: "evan-correction-1",
+      feedback: "evan-feedback-1",
     },
     revisions: [],
   },

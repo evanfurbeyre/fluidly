@@ -15,7 +15,7 @@ const Correction: NextPage<Data> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto my-10 max-w-xs p-6">
+      <main className="container mx-auto my-10 max-w-sm p-6">
         <p className="mb-5 text-xl font-bold italic text-gray-800">{question}</p>
         <h3 className="font-semibold text-gray-800">{labels.original}</h3>
         <audio controls className="w-full">
