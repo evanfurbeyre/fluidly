@@ -11,6 +11,11 @@ export type Data = {
     feedback: string
   }
   revisions: RevisionFragment[]
+  audioUris?: {
+    original: string
+    correction: string
+    feedback: string
+  }
 }
 
 export const data: Record<string, Data> = {
@@ -18,9 +23,9 @@ export const data: Record<string, Data> = {
     lang: "fr",
     question: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
     audio: {
-      original: "./evan-original-1.mp3",
-      correction: "./evan-correction-1.mp3",
-      feedback: "./evan-feedback-1.mp3",
+      original: "evan-original-1.7",
+      correction: "evan-correction-1.7",
+      feedback: "evan-feedback-1.7",
     },
     revisions: [
       {
