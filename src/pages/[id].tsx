@@ -1,6 +1,7 @@
 import type { NextPage } from "next"
 import { Data, data } from "../data/data"
 import Head from "next/head"
+import { readFileSync } from "fs"
 
 type CorProps = { children: string }
 const AddCor = ({ children }: CorProps) => (
@@ -11,7 +12,7 @@ const DelCor = ({ children }: CorProps) => (
 )
 
 const Correction: NextPage<Data> = (props) => {
-  const { question, audio, lang } = props
+  const { question, lang, audioUris } = props
   const labels = sectionLabels[lang]
 
   return (
@@ -26,7 +27,7 @@ const Correction: NextPage<Data> = (props) => {
         <p className="mb-5 text-xl font-bold italic text-gray-800">{question}</p>
         <h3 className="font-semibold text-gray-800">{labels.original}</h3>
         <audio controls className="w-full">
-          <source src={audio.original} type="audio/mp3" />
+          <source src={`data:audio/mp3;base64,${audioUris?.original}`} />
         </audio>
 
         <p className="py-4">
@@ -41,12 +42,12 @@ const Correction: NextPage<Data> = (props) => {
 
         <h3 className="font-semibold text-gray-800">{labels.correction}</h3>
         <audio controls className="w-full">
-          <source src={audio.correction} type="audio/mp3" />
+          <source src={`data:audio/mp3;base64,${audioUris?.correction}`} />
         </audio>
 
         <h3 className="font-semibold text-gray-800">{labels.feedback}</h3>
         <audio controls className="w-full">
-          <source src={audio.feedback} type="audio/mp3" />
+          <source src={`data:audio/mp3;base64,${audioUris?.feedback}`} />
         </audio>
       </main>
     </>
@@ -68,8 +69,25 @@ const sectionLabels = {
 
 export const getStaticProps = async (context: any) => {
   const id = context.params?.id
+
   return {
-    props: data[id],
+    props: {
+      ...data[id],
+      audioUris: {
+        original: readFileSync(`./src/data/b64_audio/${data[id]?.audio.original}`, {
+          encoding: "utf8",
+          flag: "r",
+        }),
+        correction: readFileSync(`./src/data/b64_audio/${data[id]?.audio.correction}`, {
+          encoding: "utf8",
+          flag: "r",
+        }),
+        feedback: readFileSync(`./src/data/b64_audio/${data[id]?.audio.feedback}`, {
+          encoding: "utf8",
+          flag: "r",
+        }),
+      },
+    },
   }
 }
 
