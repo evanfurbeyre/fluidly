@@ -2,6 +2,8 @@
 # brew install ffmpeg   (can take a bit)
 ffmpeg -i ~/Downloads/audioclip.mp4 -vn -acodec libmp3lame -ac 2 -ab 160k -ar 48000 audioclip_out.mp3
 ffmpeg -i audio/evan-original-1.mp3 -vn -acodec libmp3lame -ac 2 -ab 96k -ar 44100 audio/evan-original-1.1.mp3
+ffmpeg -i src/data/audio/katie.o.1.mp4 -vn -acodec libmp3lame -ac 2 -ab 36k -ar 44100 src/data/audio/katie.o.1.mp3
+
 
 # Reduce audio size
 ffmpeg -i audio/evan-feedback-1.mp3 -map 0:a:0 -b:a 36k audio/evan-feedback-1.8.mp3

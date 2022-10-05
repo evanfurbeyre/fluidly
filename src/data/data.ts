@@ -88,4 +88,20 @@ export const data: Record<string, Data> = {
     },
     revisions: [],
   },
+  j3d9: {
+    lang: "es",
+    question: "Danos un resumen de una película que te guste mucho",
+    audio: {
+      original: "katie-o-1",
+      correction: "evan-correction-1",
+      feedback: "evan-feedback-1",
+    },
+    revisions: [
+      {
+        type: "original",
+        content:
+          "Hola. Bueno, en realidad yo prefiero los programas de televisión. Entonces, esto es lo que me voy a explicar hoy. Ha Bueno, mi programa favorita se llama abstracto en la Flex. Es un mini documental sobre Bueno, cada episodio es un venido a comentar sobre artistas diferentes con medios diferentes a tipo el fotógrafo Platon y la pago arquitecta Naranjax Ven. Y la de tenedora este Glenn A. El programa muestra las vidas de las Artes, sus hombres de artes y las ideas que informen todo que lo hacen. Y esto es razón, que",
+      },
+    ],
+  },
 }

@@ -73,8 +73,7 @@ async function main() {
   const inFiles = await getDirFiles(AUDIO_FOLDER)
   const outFiles = await getDirFiles(B64_FOLDER)
   const files = inFiles
-    .map((f) => f.split(".mp3")[0])
-    .filter((f) => !outFiles.includes(f))
+    .filter((f) => !outFiles.includes(f.split(".")[0]))
     .filter((f) => !f.startsWith("tmp."))
     .filter((f) => ![".DS_Store"].includes(f))
   console.log("files to convert:", files)
@@ -82,9 +81,9 @@ async function main() {
   let tmpFile
   try {
     for (let i = 0; i < files.length; i += 1) {
-      tmpFile = await compress(files[i] + ".mp3")
+      tmpFile = await compress(files[i])
       const b64 = await base64ify(tmpFile, `${B64_FOLDER}${files[i]}`)
-      const outF = `${B64_FOLDER}${files[i]}`
+      const outF = `${B64_FOLDER}${files[i]}`.split(".")[0]
       writeFileSync(outF, b64)
       await remove(tmpFile)
     }
