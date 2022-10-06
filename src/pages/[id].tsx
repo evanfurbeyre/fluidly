@@ -1,11 +1,12 @@
-import type { NextPage } from "next"
-import { Data, data, RevisionFragment } from "../data/data"
-import Head from "next/head"
+import { PrismaClient } from "@prisma/client"
 import { readFileSync } from "fs"
+import type { GetStaticProps, NextPage } from "next"
+import Head from "next/head"
+import { Data, data, RevisionFragment } from "../data/data"
 
 const Correction: NextPage<Data> = (props) => {
-  const { question, audioUris, lang, revisions } = props
-  const labels = sectionLabels[lang]
+  const { content, audioUris, language, revisions } = props
+  const labels = sectionLabels[language]
 
   return (
     <>
@@ -16,7 +17,7 @@ const Correction: NextPage<Data> = (props) => {
       </Head>
 
       <main className="container mx-auto my-10 max-w-sm p-6">
-        <p className="mb-5 text-xl font-bold italic text-gray-800">{question}</p>
+        <p className="mb-5 text-xl font-bold italic text-gray-800">{content}</p>
         <h3 className="font-semibold text-gray-800">{labels.original}</h3>
         <audio controls className="w-full">
           <source src={`data:audio/mp3;base64,${audioUris?.original}`} />
@@ -78,25 +79,41 @@ const RevisionSection = ({ revisions }: { revisions: RevisionFragment[] }) => {
   )
 }
 
-export const getStaticProps = async (context: any) => {
-  const id = context.params?.id
+export const getStaticProps: GetStaticProps = async (context) => {
+  const id = context.params?.id as string
+  const response = await new PrismaClient().response.findUnique({
+    include: { prompt: true },
+    where: { id },
+  })
+
+  const original = response?.originalUrl
+    ? readFileSync(`./src/data/b64_audio/${response?.originalUrl}`, {
+        encoding: "utf8",
+        flag: "r",
+      })
+    : null
+  const correction = response?.correctionUrl
+    ? readFileSync(`./src/data/b64_audio/${response?.correctionUrl}`, {
+        encoding: "utf8",
+        flag: "r",
+      })
+    : null
+  const feedback = response?.feedbackUrl
+    ? readFileSync(`./src/data/b64_audio/${response?.feedbackUrl}`, {
+        encoding: "utf8",
+        flag: "r",
+      })
+    : null
 
   return {
     props: {
-      ...data[id],
+      content: response?.prompt?.content,
+      language: response?.prompt?.language,
+      revisions: response?.revisions,
       audioUris: {
-        original: readFileSync(`./src/data/b64_audio/${data[id]?.audio.original}`, {
-          encoding: "utf8",
-          flag: "r",
-        }),
-        correction: readFileSync(`./src/data/b64_audio/${data[id]?.audio.correction}`, {
-          encoding: "utf8",
-          flag: "r",
-        }),
-        feedback: readFileSync(`./src/data/b64_audio/${data[id]?.audio.feedback}`, {
-          encoding: "utf8",
-          flag: "r",
-        }),
+        original,
+        correction,
+        feedback,
       },
     },
   }

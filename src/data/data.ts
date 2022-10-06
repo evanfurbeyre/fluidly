@@ -3,8 +3,8 @@ export type RevisionFragment = {
   type: "original" | "addition" | "deletion"
 }
 export type Data = {
-  question: string
-  lang: "fr" | "es"
+  content: string
+  language: "fr" | "es"
   audio: {
     original: string
     correction: string
@@ -19,9 +19,9 @@ export type Data = {
 }
 
 export const data: Record<string, Data> = {
-  "1": {
-    lang: "fr",
-    question: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
+  cl8waomez0004p2brkheil87e: {
+    language: "fr",
+    content: "Qu'est-ce que tu te souviens d'avoir cinq ans?",
     audio: {
       original: "evan-original-1",
       correction: "evan-correction-1",
@@ -78,9 +78,9 @@ export const data: Record<string, Data> = {
       },
     ],
   },
-  "2": {
-    lang: "es",
-    question: "¿Cuál es tu rutina en la mañana?",
+  cl8waslv30007p2brfiezkiaf: {
+    language: "es",
+    content: "¿Cuál es tu rutina en la mañana?",
     audio: {
       original: "nate-original-1",
       correction: "evan-correction-1",
@@ -88,9 +88,9 @@ export const data: Record<string, Data> = {
     },
     revisions: [],
   },
-  j3d9: {
-    lang: "es",
-    question: "Danos un resumen de una película que te guste mucho",
+  cl8xmcpbj0004p2rveafdcoui: {
+    language: "es",
+    content: "Danos un resumen de una película que te guste mucho",
     audio: {
       original: "katie-o-1",
       correction: "evan-correction-1",
