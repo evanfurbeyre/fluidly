@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import { readFileSync } from "fs"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
-import { Data, data, RevisionFragment } from "../data/data"
+import { Data, RevisionFragment } from "../data/data"
 
 const Correction: NextPage<Data> = (props) => {
   const { content, audioUris, language, revisions } = props
@@ -120,7 +120,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 export const getStaticPaths = async () => {
-  const paths = Object.keys(data).map((id: string) => ({ params: { id } }))
+  const responses = await new PrismaClient().response.findMany()
+  const paths = responses.map(({ id }) => ({ params: { id } }))
   return { paths, fallback: false }
 }
 
