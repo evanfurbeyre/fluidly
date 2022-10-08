@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client"
 import { readFileSync } from "fs"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import Input from "../components/Input"
 import Output from "../components/Output"
 import { Data } from "../data/data"
+import { prisma } from "../server/db/client"
 
 const Correction: NextPage<Data> = (props) => {
   let state = "input"
@@ -30,7 +30,7 @@ const Correction: NextPage<Data> = (props) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id as string
-  const response = await new PrismaClient().response.findUnique({
+  const response = await prisma.response.findUnique({
     include: { prompt: true },
     where: { id },
   })
@@ -70,7 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 export const getStaticPaths = async () => {
-  const responses = await new PrismaClient().response.findMany()
+  const responses = await prisma.response.findMany()
   const paths = responses.map(({ id }) => ({ params: { id } }))
   return { paths, fallback: false }
 }

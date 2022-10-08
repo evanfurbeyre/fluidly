@@ -11,6 +11,7 @@ export const serverSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   AWS_REGION: z.string(),
   AWS_AUDIO_INPUT_BUCKET: z.string(),
+  DATABASE_URL: z.string(),
 })
 
 /**
