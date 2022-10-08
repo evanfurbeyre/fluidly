@@ -7,6 +7,10 @@ import { z } from "zod"
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  AWS_REGION: z.string(),
+  AWS_AUDIO_INPUT_BUCKET: z.string(),
 })
 
 /**

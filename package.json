@@ -11,11 +11,16 @@
     "audio": "node src/utils/processAudio.js"
   },
   "dependencies": {
+    "@aws-crypto/sha256-browser": "^2.0.2",
+    "@aws-sdk/client-s3": "^3.185.0",
+    "@aws-sdk/hash-node": "^3.183.0",
+    "@aws-sdk/s3-request-presigner": "^3.185.0",
     "@prisma/client": "^4.4.0",
     "@trpc/client": "^9.27.4",
     "@trpc/next": "^9.27.4",
     "@trpc/react": "^9.27.4",
     "@trpc/server": "^9.27.4",
+    "axios": "^1.0.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -24,6 +29,7 @@
     "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.183.0",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
