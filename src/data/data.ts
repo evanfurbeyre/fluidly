@@ -3,6 +3,7 @@ export type RevisionFragment = {
   type: "original" | "addition" | "deletion"
 }
 export type Data = {
+  id?: string
   content: string
   language: "fr" | "es"
   audio: {
