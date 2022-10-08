@@ -10,7 +10,7 @@ const Correction: NextPage = () => {
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container mx-auto h-screen p-6">
+      <div className="flex justify-center p-6">
         <Input id="test3" />
       </div>
     </>
