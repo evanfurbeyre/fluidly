@@ -1,6 +1,4 @@
-import axios from "axios"
 import { useState } from "react"
-import { trpc } from "../utils/trpc"
 
 const getRecorder = async () => {
   if (typeof window === "undefined") return null
@@ -10,17 +8,17 @@ const getRecorder = async () => {
 
 let recorder: MediaRecorder | undefined | null
 let chunks: Blob[] = []
+let blob: Blob
 
 type Props = {
-  id: string
+  onSubmit: (b: Blob) => void
 }
 
 const Input = (props: Props) => {
-  const { id } = props
+  const { onSubmit } = props
   const [audioURL, setAudioURL] = useState<string>()
   const [recording, setRecording] = useState(false)
   const [success, setSuccess] = useState(false)
-  const { data: url } = trpc.useQuery(["aws.getUploadUrl", { key: id }])
 
   const handleStart = async () => {
     setRecording(true)
@@ -28,7 +26,7 @@ const Input = (props: Props) => {
     if (!recorder) return null
     recorder.ondataavailable = (e) => chunks.push(e.data)
     recorder.onstop = async () => {
-      const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+      blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
       setAudioURL(window.URL.createObjectURL(blob))
     }
     recorder.start()
@@ -45,14 +43,7 @@ const Input = (props: Props) => {
   }
 
   const handleSubmit = async () => {
-    const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
-    axios({
-      method: "PUT",
-      url,
-      data: blob,
-    }).catch((e) => {
-      console.log("Error uploading:", e)
-    })
+    await onSubmit(blob)
     setSuccess(true)
   }
 

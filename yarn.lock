@@ -20,7 +20,7 @@
     "@aws-sdk/types" "^3.1.0"
     tslib "^1.11.1"
 
-"@aws-crypto/ie11-detection@^2.0.0", "@aws-crypto/ie11-detection@^2.0.2":
+"@aws-crypto/ie11-detection@^2.0.0":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@aws-crypto/ie11-detection/-/ie11-detection-2.0.2.tgz#9c39f4a5558196636031a933ec1b4792de959d6a"
   integrity sha512-5XDMQY98gMAf/WRTic5G++jfmS/VLM0rwpiOpaainKi4L0nqWMSB1SzsrEG5rjFZGYN6ZAefO+/Yta2dFM0kMw==
@@ -53,20 +53,6 @@
     "@aws-sdk/util-utf8-browser" "^3.0.0"
     tslib "^1.11.1"
 
-"@aws-crypto/sha256-browser@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@aws-crypto/sha256-browser/-/sha256-browser-2.0.2.tgz#b205b5c2ff20bdde7e791d7d1ee89391ce87cd24"
-  integrity sha512-V7nEV6nKYHqiWVksjQ/BnIppDHrvALDrLoL9lsxvhn/iVo77L7zGLjR+/+nFFvqg/EUz/AJr7YnVGimf1e9X7Q==
-  dependencies:
-    "@aws-crypto/ie11-detection" "^2.0.2"
-    "@aws-crypto/sha256-js" "^2.0.2"
-    "@aws-crypto/supports-web-crypto" "^2.0.2"
-    "@aws-crypto/util" "^2.0.2"
-    "@aws-sdk/types" "^3.110.0"
-    "@aws-sdk/util-locate-window" "^3.0.0"
-    "@aws-sdk/util-utf8-browser" "^3.0.0"
-    tslib "^1.11.1"
-
 "@aws-crypto/sha256-js@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@aws-crypto/sha256-js/-/sha256-js-2.0.0.tgz#f1f936039bdebd0b9e2dd834d65afdc2aac4efcb"
@@ -76,7 +62,7 @@
     "@aws-sdk/types" "^3.1.0"
     tslib "^1.11.1"
 
-"@aws-crypto/sha256-js@^2.0.0", "@aws-crypto/sha256-js@^2.0.2":
+"@aws-crypto/sha256-js@^2.0.0":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@aws-crypto/sha256-js/-/sha256-js-2.0.2.tgz#c81e5d378b8a74ff1671b58632779986e50f4c99"
   integrity sha512-iXLdKH19qPmIC73fVCrHWCSYjN/sxaAvZ3jNNyw6FclmHyjLKg0f69WlC9KTnyElxCR5MO9SKaG00VwlJwyAkQ==
@@ -85,7 +71,7 @@
     "@aws-sdk/types" "^3.110.0"
     tslib "^1.11.1"
 
-"@aws-crypto/supports-web-crypto@^2.0.0", "@aws-crypto/supports-web-crypto@^2.0.2":
+"@aws-crypto/supports-web-crypto@^2.0.0":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@aws-crypto/supports-web-crypto/-/supports-web-crypto-2.0.2.tgz#9f02aafad8789cac9c0ab5faaebb1ab8aa841338"
   integrity sha512-6mbSsLHwZ99CTOOswvCRP3C+VCWnzBf+1SnbWxzzJ9lR0mA0JnY2JEAhp8rqmTE0GPFy88rrM27ffgp62oErMQ==
@@ -420,7 +406,7 @@
     "@aws-sdk/types" "3.183.0"
     tslib "^2.3.1"
 
-"@aws-sdk/hash-node@3.183.0", "@aws-sdk/hash-node@^3.183.0":
+"@aws-sdk/hash-node@3.183.0":
   version "3.183.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/hash-node/-/hash-node-3.183.0.tgz#a8481b87bd40afd31a1c45e9a9c1a5adde64bc22"
   integrity sha512-XPe1TzupofkypgLw4Y38ruUM4hrrGIGwJGI/KsljDoEDpz24SyMItyCZbF7ddaPkbJGa4oO+HN072SXPB/z/6g==
@@ -1201,6 +1187,11 @@
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
+
+"@types/uuid@^8.3.4":
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
+  integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
 
 "@typescript-eslint/eslint-plugin@^5.33.0":
   version "5.39.0"
@@ -3235,6 +3226,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"

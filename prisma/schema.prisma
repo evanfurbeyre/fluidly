@@ -12,10 +12,6 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
-model Example {
-  id String @id @default(cuid())
-}
-
 model User {
   id        String     @id @default(cuid())
   name      String?
@@ -24,20 +20,46 @@ model User {
 }
 
 model Response {
-  id            String  @id @default(cuid())
-  user          User    @relation(fields: [userId], references: [id])
-  userId        String
-  prompt        Prompt  @relation(fields: [promptId], references: [id])
-  promptId      String
-  originalUrl   String
-  correctionUrl String?
-  feedbackUrl   String?
-  revisions     Json?
+  id          String       @id @default(cuid())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  prompt      Prompt       @relation(fields: [promptId], references: [id])
+  promptId    String
+  audio       Audio?       @relation(fields: [audioId], references: [id])
+  audioId     String?
+  corrections Correction[]
+}
+
+model Correction {
+  id         String         @id @default(cuid())
+  audio      Audio          @relation(fields: [audioId], references: [id])
+  audioId    String
+  diff       DiffFragment[]
+  response   Response       @relation(fields: [responseId], references: [id])
+  responseId String
 }
 
 model Prompt {
   id        String     @id @default(cuid())
-  content   String
+  prompt    String
   language  String
   responses Response[]
+}
+
+model Audio {
+  id         String       @id @default(cuid())
+  bucket     String
+  key        String
+  audioUrl   String?
+  language   String
+  Response   Response[]
+  Correction Correction[]
+}
+
+model DiffFragment {
+  id           String      @id @default(cuid())
+  content      String
+  type         String
+  Correction   Correction? @relation(fields: [correctionId], references: [id])
+  correctionId String?
 }
