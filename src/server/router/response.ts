@@ -17,6 +17,36 @@ export const responseRouter = createRouter()
   /**
    *
    */
+  .mutation("createResponse", {
+    input: z.object({
+      userId: z.string(),
+      promptId: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      return ctx.prisma.response.create({
+        data: input,
+        include: {
+          user: true,
+          audio: true,
+          corrections: true,
+        },
+      })
+    },
+  })
+
+  /**
+   *
+   */
+  .mutation("deleteResponse", {
+    input: z.object({ id: z.string() }),
+    async resolve({ input, ctx }) {
+      return ctx.prisma.response.delete({ where: { id: input.id } })
+    },
+  })
+
+  /**
+   *
+   */
   .mutation("addResponseAudio", {
     input: z.object({
       key: z.string(),
@@ -29,7 +59,7 @@ export const responseRouter = createRouter()
           key: input.key,
           bucket: env.AWS_AUDIO_INPUT_BUCKET,
           language: input.language,
-          Response: {
+          responses: {
             connect: {
               id: input.responseId,
             },

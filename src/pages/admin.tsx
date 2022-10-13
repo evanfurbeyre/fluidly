@@ -1,8 +1,13 @@
+import { Prisma } from "@prisma/client"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
-import { Prisma } from "@prisma/client"
+import { useState } from "react"
 import { prisma } from "../server/db/client"
+import { trpc } from "../utils/trpc"
+
+const nateUserId = "cl96eonko0000p2j38byvivrj"
+const tempPromptId = "cl96eonko0002p2j3hnm62wbl"
 
 type Responses = Prisma.PromiseReturnType<typeof getResponses>
 type Props = {
@@ -14,7 +19,21 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 }
 
 const Admin: NextPage<Props> = (props) => {
-  const { responses } = props
+  const [responses, setResponses] = useState(props.responses)
+
+  const createResponse = trpc.useMutation(["response.createResponse"], {
+    onSettled(data, error) {
+      if (error) console.log("error:", error)
+      if (data) setResponses([...responses, data])
+    },
+  })
+
+  const deleteResponse = trpc.useMutation(["response.deleteResponse"], {
+    onSettled(data, error) {
+      if (error) console.log("error:", error)
+      if (data) setResponses(responses.filter(({ id }) => id !== data.id))
+    },
+  })
 
   return (
     <>
@@ -38,7 +57,19 @@ const Admin: NextPage<Props> = (props) => {
             {responses.map((resp) => (
               <tr key={JSON.stringify(resp)}>
                 <Cell>
-                  <Link href={`/${resp.id}`}>{resp.id}</Link>
+                  <div className="my-1 mr-4 flex flex-row">
+                    <button
+                      className="mr-2 rounded bg-red-500 py-0 px-2 text-white"
+                      onClick={() => {
+                        if (window.confirm("Sure you want to delete this?")) {
+                          deleteResponse.mutate({ id: resp.id })
+                        }
+                      }}
+                    >
+                      X
+                    </button>
+                    <Link href={`/${resp.id}`}>{resp.id}</Link>
+                  </div>
                 </Cell>
                 <Cell>{resp.user.name}</Cell>
                 <Cell>{(!!resp.audio).toString()}</Cell>
@@ -47,6 +78,19 @@ const Admin: NextPage<Props> = (props) => {
             ))}
           </tbody>
         </table>
+        <div className="mt-5">
+          <button
+            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            onClick={() => {
+              createResponse.mutate({
+                userId: nateUserId,
+                promptId: tempPromptId,
+              })
+            }}
+          >
+            New response
+          </button>
+        </div>
       </div>
     </>
   )

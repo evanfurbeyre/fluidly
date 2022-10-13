@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client"
-import data from "./data"
+import seed from "./data"
 
 const prisma = new PrismaClient()
 
 async function main() {
-  for (const user of data.users) {
+  for (const user of seed.users) {
     await prisma.user.upsert({
       where: { email: user.email },
       update: {},
@@ -12,8 +12,8 @@ async function main() {
         ...user,
         responses: {
           create: {
-            audio: { create: data.audio },
-            prompt: { create: data.prompt },
+            // audio: { create: seed.audio },
+            prompt: { create: seed.prompt },
           },
         },
       },

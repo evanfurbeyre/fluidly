@@ -47,19 +47,19 @@ model Prompt {
 }
 
 model Audio {
-  id         String       @id @default(cuid())
-  bucket     String
-  key        String
-  audioUrl   String?
-  language   String
-  Response   Response[]
-  Correction Correction[]
+  id          String       @id @default(cuid())
+  bucket      String
+  key         String
+  audioUrl    String?
+  language    String
+  responses   Response[]
+  corrections Correction[]
 }
 
 model DiffFragment {
   id           String      @id @default(cuid())
   content      String
   type         String
-  Correction   Correction? @relation(fields: [correctionId], references: [id])
+  correction   Correction? @relation(fields: [correctionId], references: [id])
   correctionId String?
 }
