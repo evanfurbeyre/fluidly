@@ -73,8 +73,8 @@ const Response: NextPage<Props> = ({ id }) => {
     })
   }
 
-  const haveAudio = typeof response.audio?.audioUrl === "string"
-  const haveCorrections = Boolean(response.corrections.length)
+  const hasAudio = typeof response.audio?.audioUrl === "string"
+  const hasCorrections = Boolean(response.corrections.length)
   const isAdmin = query.admin
 
   console.log("response.corrections:", response.corrections)
@@ -91,7 +91,7 @@ const Response: NextPage<Props> = ({ id }) => {
           <h1 className="text-2xl">{response.prompt.prompt}</h1>
 
           {/* Show audio or AudioInput */}
-          {haveAudio ? (
+          {hasAudio ? (
             <audio
               src={response.audio?.audioUrl as string}
               controls
@@ -102,14 +102,14 @@ const Response: NextPage<Props> = ({ id }) => {
           )}
 
           {/* Show message if corrections are pending */}
-          {haveAudio && !haveCorrections && (
+          {hasAudio && !hasCorrections && (
             <div className="p-6 text-center">be patient, correction coming soon</div>
           )}
 
           {/* Show corrections */}
-          {haveCorrections && (
+          {hasCorrections && (
             <>
-              <h2>Corrections</h2>
+              <h2 className="mt-3">Corrections</h2>
               {response.corrections.map((cor) => (
                 <Correction key={cor.id} audio={cor.audio} diff={cor.diff} />
               ))}

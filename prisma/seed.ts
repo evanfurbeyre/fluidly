@@ -12,8 +12,14 @@ async function main() {
         ...user,
         responses: {
           create: {
-            // audio: { create: seed.audio },
+            audio: { create: seed.audio },
             prompt: { create: seed.prompt },
+            corrections: {
+              create: {
+                diff: { create: seed.diff },
+                audio: { create: seed.audio },
+              },
+            },
           },
         },
       },
