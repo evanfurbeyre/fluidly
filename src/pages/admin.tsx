@@ -6,9 +6,6 @@ import { useState } from "react"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 
-const nateUserId = "cl96eonko0000p2j38byvivrj"
-const tempPromptId = "cl96eonko0002p2j3hnm62wbl"
-
 type Responses = Prisma.PromiseReturnType<typeof getResponses>
 type Props = {
   responses: Responses
@@ -20,6 +17,8 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 
 const Admin: NextPage<Props> = (props) => {
   const [responses, setResponses] = useState(props.responses)
+  const defaultPrompt = trpc.useQuery(["response.getPrompt"])
+  const defaultUser = trpc.useQuery(["response.getUser"])
 
   const createResponse = trpc.useMutation(["response.createResponse"], {
     onSettled(data, error) {
@@ -82,9 +81,15 @@ const Admin: NextPage<Props> = (props) => {
           <button
             className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
             onClick={() => {
+              if (!defaultPrompt.data?.id) {
+                return console.log("Could not create response: default prompt not found")
+              }
+              if (!defaultUser.data?.id) {
+                return console.log("Could not create response: default user not found")
+              }
               createResponse.mutate({
-                userId: nateUserId,
-                promptId: tempPromptId,
+                userId: defaultUser.data.id,
+                promptId: defaultPrompt.data.id,
               })
             }}
           >

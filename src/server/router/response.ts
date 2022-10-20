@@ -117,6 +117,30 @@ export const responseRouter = createRouter()
   /**
    *
    */
+  .query("getPrompt", {
+    input: z.object({ id: z.string() }).optional(),
+    async resolve({ input, ctx }) {
+      return input?.id
+        ? ctx.prisma.prompt.findUnique({ where: { id: input.id } })
+        : ctx.prisma.prompt.findFirst()
+    },
+  })
+
+  /**
+   *
+   */
+  .query("getUser", {
+    input: z.object({ id: z.string() }).optional(),
+    async resolve({ input, ctx }) {
+      return input?.id
+        ? ctx.prisma.user.findUnique({ where: { id: input.id } })
+        : ctx.prisma.user.findFirst()
+    },
+  })
+
+  /**
+   *
+   */
   .query("getResponse", {
     input: z.object({
       id: z.string(),
