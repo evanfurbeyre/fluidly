@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "db": "prisma db",
-    "db:reset:seed": "prisma migrate reset --force --skip-seed && yarn db push && yarn db seed"
+    "db:reset:seed": "prisma migrate reset --force --skip-seed && yarn prisma db push && yarn prisma db seed"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.185.0",
