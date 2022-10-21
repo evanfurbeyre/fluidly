@@ -1,12 +1,19 @@
 import { DiffFragment, DiffType } from "@prisma/client"
+import { NextPage } from "next"
 import { useState } from "react"
-import Correction from "./Correction"
+import { trpc } from "../utils/trpc"
+import DiffBlock from "./DiffBlock"
+
+type Props = {
+  correctionId: string
+}
 
 type DiffFrag = { type: DiffType; content: string }
 
 const defaultDiffFrag: DiffFrag = { type: "original", content: "" }
 
-const DiffInput = () => {
+const DiffInput: NextPage<Props> = ({ correctionId }) => {
+  const addDiffFragments = trpc.useMutation(["response.addDiffFragments"])
   const [diffFrag, setDiffFrag] = useState<DiffFrag>(defaultDiffFrag)
   const [result, setResult] = useState<DiffFrag[]>([])
 
@@ -68,7 +75,7 @@ const DiffInput = () => {
       </div>
       <h1>Result:</h1>
       <div className="my-2 w-full rounded-lg border-2 bg-white p-4">
-        <Correction diff={result as DiffFragment[]} />
+        <DiffBlock diff={result as DiffFragment[]} />
       </div>
       <div className="self-end">
         <button
@@ -77,7 +84,12 @@ const DiffInput = () => {
         >
           Start over
         </button>
-        <button className="rounded-lg bg-orange-400 py-1 px-2 text-white">Submit</button>
+        <button
+          onClick={() => addDiffFragments.mutate({ correctionId, diff: result })}
+          className="rounded-lg bg-orange-400 py-1 px-2 text-white"
+        >
+          Submit
+        </button>
       </div>
     </div>
   )

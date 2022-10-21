@@ -3,8 +3,8 @@ import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { useState } from "react"
-import { prisma } from "../server/db/client"
-import { trpc } from "../utils/trpc"
+import { prisma } from "../../server/db/client"
+import { trpc } from "../../utils/trpc"
 
 type Responses = Prisma.PromiseReturnType<typeof getResponses>
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 }
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
-  return <td className="w-64">{children}</td>
+  return <td className="w-96">{children}</td>
 }
 
 const Admin: NextPage<Props> = (props) => {
@@ -41,15 +41,16 @@ const Admin: NextPage<Props> = (props) => {
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="">
+      <div className="p-5">
         <h1>Responses</h1>
         <table className="">
           <thead>
             <tr>
-              <Cell>id</Cell>
-              <Cell>user</Cell>
-              <Cell>audio</Cell>
-              <Cell>corrections</Cell>
+              <Cell>Response</Cell>
+              <Cell>User</Cell>
+              <Cell>Audio</Cell>
+              <Cell>Corrections</Cell>
+              <Cell>Prompt</Cell>
             </tr>
           </thead>
           <tbody>
@@ -67,12 +68,19 @@ const Admin: NextPage<Props> = (props) => {
                     >
                       X
                     </button>
-                    <Link href={`/${resp.id}`}>{resp.id}</Link>
+                    <Link href={`/${resp.id}`}>
+                      <a className="underline">Submission</a>
+                    </Link>
+                    <span className="mx-3">|</span>
+                    <Link href={`/admin/${resp.id}`}>
+                      <a className="underline">Correction</a>
+                    </Link>
                   </div>
                 </Cell>
                 <Cell>{resp.user.name}</Cell>
                 <Cell>{(!!resp.audio).toString()}</Cell>
                 <Cell>{(!!resp.corrections?.length).toString()}</Cell>
+                <Cell>{resp.prompt.prompt}</Cell>
               </tr>
             ))}
           </tbody>
@@ -107,6 +115,7 @@ const getResponses = async () => {
       user: true,
       audio: true,
       corrections: true,
+      prompt: true,
     },
   })
   return responses

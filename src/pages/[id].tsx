@@ -1,43 +1,31 @@
+import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
-import axios from "axios"
 import AudioInput from "../components/AudioInput"
-import Correction from "../components/Correction"
+import DiffBlock from "../components/DiffBlock"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
-import { useRouter } from "next/router"
-import { useState } from "react"
-import DiffInput from "../components/DiffInput"
 
 type Props = {
   id: string
 }
 
 const Response: NextPage<Props> = ({ id }) => {
-  const [addingCorrection, setAddingCorrection] = useState(false)
-  const { query } = useRouter()
   const getResponseQry = trpc.useQuery(["response.getResponse", { id }])
-  const responseAudioUploadQry = trpc.useQuery(["response.getAudioUploadUrl"])
-  const correctionAudioUploadQry = trpc.useQuery(["response.getAudioUploadUrl"])
   const addResponseAudio = trpc.useMutation(["response.addResponseAudio"])
-  const addCorrection = trpc.useMutation(["response.addCorrection"])
+  const responseAudioUploadQry = trpc.useQuery(["response.getAudioUploadUrl"])
 
-  if (
-    getResponseQry.isLoading ||
-    responseAudioUploadQry.isLoading ||
-    correctionAudioUploadQry.isLoading
-  ) {
+  if (getResponseQry.isLoading || responseAudioUploadQry.isLoading) {
     return <></>
   }
 
-  const { data: response } = getResponseQry
+  const response = getResponseQry.data
   const { url: resUrl, key: resKey } = responseAudioUploadQry.data ?? {}
-  const { url: corUrl, key: corKey } = correctionAudioUploadQry.data ?? {}
 
   if (!response) {
     throw new Error("no response found")
   }
-  if (!resKey || !resUrl || !corKey || !corUrl) {
+  if (!resKey || !resUrl) {
     throw new Error("bad upload url")
   }
 
@@ -57,29 +45,8 @@ const Response: NextPage<Props> = ({ id }) => {
     })
   }
 
-  const submitCorrection = async (blob: Blob) => {
-    // TODO: maybe we should just send the blob to the server and upload there??
-    await axios({
-      method: "PUT",
-      url: corUrl,
-      data: blob,
-    }).catch((e) => {
-      console.log("Error uploading:", e)
-      throw e
-    })
-    addCorrection.mutate({
-      key: corKey,
-      responseId: response.id,
-      language: response.prompt.language,
-    })
-  }
-
   const hasAudio = typeof response.audio?.audioUrl === "string"
   const hasCorrections = Boolean(response.corrections.length)
-  // const isAdmin = query.admin
-  const isAdmin = true
-
-  console.log("response.corrections:", response.corrections)
 
   return (
     <>
@@ -96,8 +63,8 @@ const Response: NextPage<Props> = ({ id }) => {
           {hasAudio ? (
             <audio
               src={response.audio?.audioUrl as string}
-              controls
               className="w-full rounded-lg"
+              controls
             />
           ) : (
             <AudioInput onSubmit={submitResponseAudio} />
@@ -120,33 +87,11 @@ const Response: NextPage<Props> = ({ id }) => {
                     </audio>
                   )}
                   <div className="rounded-2xl bg-stone-100 py-4 px-5">
-                    <Correction key={cor.id} diff={cor.diff} />
+                    <DiffBlock key={cor.id} diff={cor.diff} />
                   </div>
                 </>
               ))}
             </>
-          )}
-
-          {/* Show add correction button ifAdmin */}
-          {isAdmin && !addingCorrection && (
-            <button
-              className="rounded-lg bg-slate-300 py-1 px-3 font-medium text-slate-800"
-              type="button"
-              onClick={() => setAddingCorrection(true)}
-            >
-              Add Correction
-            </button>
-          )}
-
-          {/* Show add correction section if addingCorrection */}
-          {addingCorrection && (
-            <div>
-              <AudioInput onSubmit={submitCorrection} />
-              <DiffInput />
-              <button type="button" onClick={() => setAddingCorrection(false)}>
-                Cancel
-              </button>
-            </div>
           )}
         </div>
       </div>

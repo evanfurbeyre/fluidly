@@ -1,10 +1,10 @@
-import { Audio, DiffFragment } from "@prisma/client"
+import { DiffFragment } from "@prisma/client"
 
 type Props = {
   diff: DiffFragment[]
 }
 
-const Correction = (props: Props) => {
+const DiffBlock = (props: Props) => {
   const { diff } = props
 
   return (
@@ -41,4 +41,4 @@ const Correction = (props: Props) => {
   )
 }
 
-export default Correction
+export default DiffBlock

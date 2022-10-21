@@ -1,9 +1,9 @@
-import { createRouter } from "./context"
-import { z } from "zod"
-import { v4 } from "uuid"
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
+import { v4 } from "uuid"
+import { z } from "zod"
 import { env } from "../../env/server.mjs"
+import { createRouter } from "./context"
 
 const client = new S3Client({
   region: env.AWS_REGION,
@@ -28,6 +28,7 @@ export const responseRouter = createRouter()
         include: {
           user: true,
           audio: true,
+          prompt: true,
           corrections: true,
         },
       })
@@ -92,6 +93,30 @@ export const responseRouter = createRouter()
           responseId: input.responseId,
           audioId: audio.id,
         },
+      })
+    },
+  })
+
+  /**
+   *
+   */
+  .mutation("addDiffFragments", {
+    input: z.object({
+      correctionId: z.string(),
+      diff: z.array(
+        z.object({
+          type: z.enum(["original", "addition", "deletion"]),
+          content: z.string(),
+        }),
+      ),
+    }),
+    async resolve({ input, ctx }) {
+      const { correctionId, diff } = input
+      return ctx.prisma.diffFragment.createMany({
+        data: diff.map((d) => ({
+          ...d,
+          correctionId,
+        })),
       })
     },
   })
