@@ -8,9 +8,15 @@ type Props = {
   correctionId: string
 }
 
-type DiffFrag = { type: DiffType; content: string }
+type DiffFrag = {
+  type: DiffType
+  content: string
+}
 
-const defaultDiffFrag: DiffFrag = { type: "original", content: "" }
+const defaultDiffFrag: DiffFrag = {
+  type: "original",
+  content: "",
+}
 
 const DiffInput: NextPage<Props> = ({ correctionId }) => {
   const addDiffFragments = trpc.useMutation(["response.addDiffFragments"])

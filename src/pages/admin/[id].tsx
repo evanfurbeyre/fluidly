@@ -101,23 +101,24 @@ const Response: NextPage<Props> = ({ id }) => {
           )}
 
           {hasCorrections && (
-            <>
-              <h2 className="mt-3">Existing Correction</h2>
+            <div className="w-full">
+              <h2 className="mt-5 text-center text-xl">Corrections</h2>
               {response.corrections.map((cor) => (
-                <>
+                <div className="my-2 w-full" key={cor.id}>
                   {cor.audio?.audioUrl && (
                     <audio src={cor.audio.audioUrl} controls className="w-full rounded-lg">
                       <source />
                     </audio>
                   )}
+
                   {cor.diff.length > 0 && (
-                    <div className="rounded-2xl bg-stone-100 py-4 px-5">
+                    <div className="my-4 rounded-2xl bg-stone-100 py-4 px-5">
                       <DiffBlock diff={cor.diff} />
                     </div>
                   )}
-                </>
+                </div>
               ))}
-            </>
+            </div>
           )}
 
           {hasCorrections && !hasDiff && !addingDiff && (
@@ -131,7 +132,7 @@ const Response: NextPage<Props> = ({ id }) => {
           )}
 
           {addingDiff && correctionId && (
-            <>
+            <div className="w-full">
               <DiffInput correctionId={correctionId} />
               <button
                 className="float-right mt-3 rounded-lg border-2 px-2 py-1"
@@ -140,7 +141,7 @@ const Response: NextPage<Props> = ({ id }) => {
               >
                 Cancel
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

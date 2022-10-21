@@ -77,21 +77,24 @@ const Response: NextPage<Props> = ({ id }) => {
 
           {/* Show corrections */}
           {hasCorrections && (
-            <>
-              <h2 className="mt-3">Corrections</h2>
+            <div className="w-full">
+              <h2 className="mt-5 text-xl">Corrections</h2>
               {response.corrections.map((cor) => (
-                <>
+                <div className="my-2 w-full" key={cor.id}>
                   {cor.audio?.audioUrl && (
                     <audio src={cor.audio.audioUrl} controls className="w-full rounded-lg">
                       <source />
                     </audio>
                   )}
-                  <div className="rounded-2xl bg-stone-100 py-4 px-5">
-                    <DiffBlock key={cor.id} diff={cor.diff} />
-                  </div>
-                </>
+
+                  {cor.diff.length > 0 && (
+                    <div className="my-4 rounded-2xl bg-stone-100 py-4 px-5">
+                      <DiffBlock diff={cor.diff} />
+                    </div>
+                  )}
+                </div>
               ))}
-            </>
+            </div>
           )}
         </div>
       </div>

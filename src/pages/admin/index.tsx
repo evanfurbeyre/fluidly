@@ -42,7 +42,6 @@ const Admin: NextPage<Props> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="p-5">
-        <h1>Responses</h1>
         <table className="">
           <thead>
             <tr>
