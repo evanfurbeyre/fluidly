@@ -35,7 +35,7 @@ model Correction {
   audio      Audio          @relation(fields: [audioId], references: [id])
   audioId    String
   diff       DiffFragment[]
-  response   Response       @relation(fields: [responseId], references: [id])
+  response   Response       @relation(fields: [responseId], references: [id], onDelete: Cascade)
   responseId String
 }
 
@@ -60,7 +60,7 @@ model DiffFragment {
   id           String      @id @default(cuid())
   content      String
   type         DiffType
-  correction   Correction? @relation(fields: [correctionId], references: [id])
+  correction   Correction? @relation(fields: [correctionId], references: [id], onDelete: Cascade)
   correctionId String?
 }
 
