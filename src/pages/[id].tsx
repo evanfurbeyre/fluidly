@@ -7,6 +7,7 @@ import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 import { useRouter } from "next/router"
 import { useState } from "react"
+import DiffInput from "../components/DiffInput"
 
 type Props = {
   id: string
@@ -75,7 +76,8 @@ const Response: NextPage<Props> = ({ id }) => {
 
   const hasAudio = typeof response.audio?.audioUrl === "string"
   const hasCorrections = Boolean(response.corrections.length)
-  const isAdmin = query.admin
+  // const isAdmin = query.admin
+  const isAdmin = true
 
   console.log("response.corrections:", response.corrections)
 
@@ -111,7 +113,16 @@ const Response: NextPage<Props> = ({ id }) => {
             <>
               <h2 className="mt-3">Corrections</h2>
               {response.corrections.map((cor) => (
-                <Correction key={cor.id} audio={cor.audio} diff={cor.diff} />
+                <>
+                  {cor.audio?.audioUrl && (
+                    <audio src={cor.audio.audioUrl} controls className="w-full rounded-lg">
+                      <source />
+                    </audio>
+                  )}
+                  <div className="rounded-2xl bg-stone-100 py-4 px-5">
+                    <Correction key={cor.id} diff={cor.diff} />
+                  </div>
+                </>
               ))}
             </>
           )}
@@ -131,6 +142,7 @@ const Response: NextPage<Props> = ({ id }) => {
           {addingCorrection && (
             <div>
               <AudioInput onSubmit={submitCorrection} />
+              <DiffInput />
               <button type="button" onClick={() => setAddingCorrection(false)}>
                 Cancel
               </button>
