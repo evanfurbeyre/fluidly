@@ -15,9 +15,9 @@ type Props = {
 const Response: NextPage<Props> = ({ id }) => {
   const [addingDiff, setAddingDiff] = useState(false)
   const [addingCorrection, setAddingCorrection] = useState(false)
-  const getResponseQry = trpc.useQuery(["response.getResponse", { id }])
-  const correctionAudioUploadQry = trpc.useQuery(["response.getAudioUploadUrl"])
-  const addCorrection = trpc.useMutation(["response.addCorrection"])
+  const getResponseQry = trpc.response.getResponse.useQuery({ id })
+  const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
+  const addCorrection = trpc.response.addCorrection.useMutation()
 
   if (getResponseQry.isLoading || correctionAudioUploadQry.isLoading) {
     return <></>

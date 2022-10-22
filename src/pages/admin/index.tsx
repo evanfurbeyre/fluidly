@@ -17,17 +17,17 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 
 const Admin: NextPage<Props> = (props) => {
   const [responses, setResponses] = useState(props.responses)
-  const defaultPrompt = trpc.useQuery(["response.getPrompt"])
-  const defaultUser = trpc.useQuery(["response.getUser"])
+  const defaultPrompt = trpc.response.getPrompt.useQuery()
+  const defaultUser = trpc.response.getUser.useQuery()
 
-  const createResponse = trpc.useMutation(["response.createResponse"], {
+  const createResponse = trpc.response.createResponse.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
       if (data) setResponses([...responses, data])
     },
   })
 
-  const deleteResponse = trpc.useMutation(["response.deleteResponse"], {
+  const deleteResponse = trpc.response.deleteResponse.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
       if (data) setResponses(responses.filter(({ id }) => id !== data.id))
