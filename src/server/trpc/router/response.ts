@@ -70,25 +70,29 @@ export const responseRouter = router({
       // TODO: is there a better way to attach presigned urls?
 
       // Attach pre-signed url of audio
-      const command1 = new GetObjectCommand({
+      const responseCommand = new GetObjectCommand({
         Bucket: env.AWS_AUDIO_INPUT_BUCKET,
         Key: res.audio.key,
       })
-      const url1 = await getSignedUrl(client, command1, { expiresIn: 3600 })
-      res.audio.audioUrl = url1
 
-      if (res.corrections && res.corrections.length > 0) {
-        // Attach pre-signed url of audio
-        const command2 = new GetObjectCommand({
+      const correctionCommands = res.corrections.map(() => {
+        return new GetObjectCommand({
           Bucket: env.AWS_AUDIO_INPUT_BUCKET,
           Key: res.corrections[0]?.audio.key,
         })
-        const url2 = await getSignedUrl(client, command2, { expiresIn: 3600 })
-        if (res.corrections[0]?.audio) {
-          res.corrections[0].audio.audioUrl = url2
-          console.log("res.corrections[0].audioUrl:", res.corrections[0]?.audio.audioUrl)
-        }
-      }
+      })
+
+      const urls = await Promise.all([
+        getSignedUrl(client, responseCommand, { expiresIn: 3600 }),
+        ...correctionCommands.map((c) => getSignedUrl(client, c, { expiresIn: 3600 })),
+      ])
+
+      res.audio.audioUrl = urls[0]
+
+      res.corrections.forEach((c, i) => {
+        const audioUrl = urls[i + 1] // first audioUrl in array belongs to the response
+        if (audioUrl) c.audio.audioUrl = audioUrl
+      })
 
       return res
     }),
