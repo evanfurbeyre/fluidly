@@ -41,7 +41,7 @@ export const correctionRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { correctionId, diff } = input
-      ctx.prisma.correction.update({
+      return ctx.prisma.correction.update({
         where: { id: correctionId },
         data: { diff: { createMany: { data: diff } } },
       })
