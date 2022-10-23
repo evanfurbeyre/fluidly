@@ -11,13 +11,13 @@ const Audio = (props: Props) => {
   const { data: session } = useSession()
 
   return (
-    <div className="flex bg-slate-500">
-      <audio src={src} className="" controls />
-      {session && withOptions && (
-        <div className="flex w-12 items-center justify-center">
+    <div className="flex">
+      <audio src={src} className="w-full rounded-2xl" controls />
+      {/* {session && withOptions && (
+        <div className="flex w-12 grow-0 items-center justify-center">
           <div className="dropdown-end dropdown">
-            <button tabIndex={0} className="text-white">
-              <EllipsisVerticalIcon className="h-6 w-6 text-white" />
+            <button tabIndex={0} className="">
+              <EllipsisVerticalIcon className="h-6 w-6" />
             </button>
             <ul
               tabIndex={0}
@@ -35,7 +35,7 @@ const Audio = (props: Props) => {
             </ul>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

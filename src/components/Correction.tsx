@@ -12,19 +12,20 @@ const Correction = ({ correction }: CorrectionProps) => {
 
   return (
     <div>
-      {audio.audioUrl && <Audio src={audio.audioUrl} withOptions />}
-
-      {diff.length > 0 && (
-        <div className="rounded-2xl bg-stone-100 p-4">
-          <DiffBlock diff={diff} />
-        </div>
-      )}
+      <div className="rounded-2xl bg-stone-200">
+        {audio.audioUrl && <Audio src={audio.audioUrl} withOptions />}
+        {diff.length > 0 && (
+          <div className="py-2 px-4">
+            <DiffBlock diff={diff} />
+          </div>
+        )}
+      </div>
 
       {!addingDiff && (
         <button
           type="button"
           onClick={() => setAddingDiff(true)}
-          className="float-right rounded-lg border-2 px-2 py-1 text-sm"
+          className="float-right rounded-lg py-1 text-sm"
         >
           Add text
         </button>
