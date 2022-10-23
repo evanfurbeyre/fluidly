@@ -42,7 +42,7 @@ model Session {
 model User {
   id            String     @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -62,9 +62,9 @@ model VerificationToken {
 
 model Response {
   id          String       @id @default(cuid())
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
-  prompt      Prompt       @relation(fields: [promptId], references: [id])
+  prompt      Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)
   promptId    String
   audio       Audio?       @relation(fields: [audioId], references: [id])
   audioId     String?
