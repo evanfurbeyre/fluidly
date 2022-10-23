@@ -12,7 +12,7 @@ const Correction = ({ correction }: CorrectionProps) => {
 
   return (
     <div>
-      {audio.audioUrl && <Audio src={audio.audioUrl} />}
+      {audio.audioUrl && <Audio src={audio.audioUrl} withOptions />}
 
       {diff.length > 0 && (
         <div className="rounded-2xl bg-stone-100 p-4">

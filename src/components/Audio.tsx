@@ -3,16 +3,17 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
 
 type Props = {
   src: string
+  withOptions?: boolean
 }
 
 const Audio = (props: Props) => {
-  const { src } = props
+  const { src, withOptions } = props
   const { data: session } = useSession()
 
   return (
     <div className="flex bg-slate-500">
       <audio src={src} className="" controls />
-      {session && (
+      {session && withOptions && (
         <div className="flex w-12 items-center justify-center">
           <div className="dropdown-end dropdown">
             <button tabIndex={0} className="text-white">
@@ -37,10 +38,6 @@ const Audio = (props: Props) => {
       )}
     </div>
   )
-}
-
-Audio.defaultProps = {
-  options: false,
 }
 
 export default Audio
