@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
+import { useSession } from "next-auth/react"
 import Head from "next/head"
+import Audio from "../components/Audio"
 import AudioInput from "../components/AudioInput"
 import Correction from "../components/Correction"
 import { prisma } from "../server/db/client"
@@ -14,6 +16,8 @@ const Response: NextPage<Props> = ({ id }) => {
   const getResponseQry = trpc.response.findUnique.useQuery({ id })
   const addResponseAudio = trpc.response.addResponseAudio.useMutation()
   const responseAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
+  const { data: session } = useSession()
+  console.log("session:", session)
 
   if (getResponseQry.isLoading || responseAudioUploadQry.isLoading) {
     return <></>
@@ -63,9 +67,7 @@ const Response: NextPage<Props> = ({ id }) => {
         <div className={`flex w-full flex-col items-stretch gap-4 sm:w-96`}>
           <h1 className={`w-full text-2xl`}>{response.prompt.prompt}</h1>
 
-          {hasAudio && (
-            <audio src={response.audio?.audioUrl as string} className="rounded-lg" controls />
-          )}
+          {hasAudio && response.audio?.audioUrl && <Audio src={response.audio.audioUrl} />}
 
           {hasAudio && !hasCorrections && (
             <div className="p-6 text-xs">

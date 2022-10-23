@@ -1,4 +1,5 @@
 import { useState } from "react"
+import Audio from "./Audio"
 
 const getRecorder = async () => {
   if (typeof window === "undefined") return null
@@ -66,11 +67,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
       )}
       {audioURL && (
         <div>
-          <audio
-            controls
-            src={audioURL}
-            className={`w-full rounded-lg ${!audioURL && "opacity-50"}`}
-          ></audio>
+          <Audio src={audioURL} />
           <div className={`mt-2 flex flex-row justify-around`}>
             <button
               type="button"

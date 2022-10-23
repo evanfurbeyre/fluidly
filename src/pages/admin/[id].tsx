@@ -2,6 +2,7 @@ import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import { useState } from "react"
+import Audio from "../../components/Audio"
 import AudioInput from "../../components/AudioInput"
 import Correction from "../../components/Correction"
 import { prisma } from "../../server/db/client"
@@ -63,11 +64,7 @@ const Response: NextPage<Props> = ({ id }) => {
           <h1 className="text-2xl">{response.prompt.prompt}</h1>
 
           {hasAudio ? (
-            <audio
-              src={response.audio?.audioUrl as string}
-              className="w-full rounded-lg"
-              controls
-            />
+            <Audio src={response.audio?.audioUrl as string} />
           ) : (
             <p>User has not submitted audio yet.</p>
           )}

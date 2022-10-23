@@ -10,7 +10,7 @@ export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
     signIn({ user }) {
-      if (user.email === "evan.furbeyre@gmail.com") {
+      if (user.email && env.ADMIN_USER_EMAILS.includes(user.email)) {
         return true
       }
       return env.NEXTAUTH_URL

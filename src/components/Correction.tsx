@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { CorrectionWithRelations } from "../utils/types"
+import Audio from "./Audio"
 import DiffBlock from "./DiffBlock"
 import DiffInput from "./DiffInput"
 
@@ -8,15 +9,10 @@ type CorrectionProps = { correction: CorrectionWithRelations }
 const Correction = ({ correction }: CorrectionProps) => {
   const { id, audio, diff } = correction
   const [addingDiff, setAddingDiff] = useState(false)
-  const isAdmin = window.location.href.includes("/admin/") // todo: use more robust admin check
 
   return (
     <div>
-      {audio.audioUrl && (
-        <audio src={audio.audioUrl} controls className="w-full rounded-lg">
-          <source />
-        </audio>
-      )}
+      {audio.audioUrl && <Audio src={audio.audioUrl} />}
 
       {diff.length > 0 && (
         <div className="rounded-2xl bg-stone-100 p-4">
@@ -24,7 +20,7 @@ const Correction = ({ correction }: CorrectionProps) => {
         </div>
       )}
 
-      {isAdmin && !addingDiff && (
+      {!addingDiff && (
         <button
           type="button"
           onClick={() => setAddingDiff(true)}
