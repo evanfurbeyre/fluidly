@@ -1,5 +1,5 @@
 import { CheckIcon } from "@heroicons/react/24/solid"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Audio from "./Audio"
 
 const getRecorder = async () => {
@@ -20,9 +20,9 @@ type Props = {
 const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const [audioURL, setAudioURL] = useState<string>()
   const [recording, setRecording] = useState(false)
-  const [audioDuration, setAudioDuration] = useState(0)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [duration, setDuration] = useState(0)
 
   const handleStart = async () => {
     setRecording(true)
@@ -44,6 +44,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const handleReset = () => {
     chunks = []
     setAudioURL("")
+    setDuration(0)
   }
 
   const handleSubmit = async () => {
@@ -53,11 +54,25 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
     setSuccess(true)
   }
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined
+    if (recording) {
+      interval = setInterval(() => {
+        setDuration((seconds) => seconds + 0.1)
+      }, 100)
+    } else if (!recording && duration !== 0) {
+      clearInterval(interval)
+    }
+    return () => clearInterval(interval)
+  }, [recording, duration])
+
   return (
     <div className="flex flex-col items-center justify-center p-4 ring-4 ring-slate-300">
       {!audioURL && (
         <>
-          {recording && <p className="mb-2">{audioDuration.toFixed(2)}</p>}
+          {recording && (
+            <p className="mb-2">{new Date(duration * 1000).toISOString().slice(15, 21)}</p>
+          )}
           <button
             type="button"
             onClick={!recording ? handleStart : handleStop}
@@ -76,7 +91,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="btn btn-outline w-28"
+              className="btn-outline btn w-28"
               onClick={handleReset}
             >
               Discard
