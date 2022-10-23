@@ -28,11 +28,11 @@ const DiffInput: NextPage<Props> = ({ correctionId }) => {
       <h1>Create Diff</h1>
       <textarea
         value={diffFrag.content}
-        placeholder="Add a diff fragment here"
-        className="my-2 w-full rounded-lg border-2 p-4"
+        placeholder="Enter correction fragment here..."
+        className="my-2 w-full rounded-lg border-2 p-4 text-sm"
         onChange={(e) => setDiffFrag((d) => ({ ...d, content: e.target.value }))}
       ></textarea>
-      <div className="mb-3 flex w-full flex-row justify-between">
+      <div className="mb-3 flex w-full flex-row items-center justify-between text-sm">
         <span>
           <input
             type="radio"
@@ -66,8 +66,6 @@ const DiffInput: NextPage<Props> = ({ correctionId }) => {
           />
           <label className="ml-1">deletion</label>
         </span>
-      </div>
-      <div className="self-end">
         <button
           className=" rounded-lg border-2 border-orange-500 py-1 px-2 text-orange-500"
           onClick={() => {

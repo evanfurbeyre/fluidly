@@ -3,8 +3,7 @@ import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import { useState } from "react"
 import AudioInput from "../../components/AudioInput"
-import DiffBlock from "../../components/DiffBlock"
-import DiffInput from "../../components/DiffInput"
+import Correction from "../../components/Correction"
 import { prisma } from "../../server/db/client"
 import { trpc } from "../../utils/trpc"
 
@@ -13,7 +12,6 @@ type Props = {
 }
 
 const Response: NextPage<Props> = ({ id }) => {
-  const [addingDiff, setAddingDiff] = useState(false)
   const [addingCorrection, setAddingCorrection] = useState(false)
   const getResponseQry = trpc.response.findUnique.useQuery({ id })
   const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
@@ -52,9 +50,6 @@ const Response: NextPage<Props> = ({ id }) => {
 
   const hasAudio = typeof response.audio?.audioUrl === "string"
   const hasCorrections = Boolean(response.corrections.length)
-  const correctionId = response.corrections[0]?.id
-  const diff = response.corrections[0]?.diff
-  const hasDiff = Boolean(diff && diff.length > 0)
 
   return (
     <>
@@ -64,7 +59,7 @@ const Response: NextPage<Props> = ({ id }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="container mx-auto flex items-center justify-center p-6">
-        <div className="flex w-full flex-col items-center gap-4 sm:w-96">
+        <div className="flex w-full flex-col items-stretch gap-4 sm:w-96">
           <h1 className="text-2xl">{response.prompt.prompt}</h1>
 
           {hasAudio ? (
@@ -77,71 +72,29 @@ const Response: NextPage<Props> = ({ id }) => {
             <p>User has not submitted audio yet.</p>
           )}
 
-          {!hasCorrections && !addingCorrection && (
+          <div className="mt-5 flex w-full flex-row items-center justify-between">
+            <h2 className="text-lg">Corrections</h2>
             <button
               type="button"
               onClick={() => setAddingCorrection(true)}
-              className="rounded-lg bg-slate-300 py-1 px-3 font-medium text-slate-800"
+              className="rounded px-2 text-sm text-orange-500 ring-2 ring-orange-500"
             >
               Add Correction
             </button>
-          )}
+          </div>
 
           {addingCorrection && (
-            <div>
-              <AudioInput onSubmit={submitCorrection} />
-              <button
-                className="float-right mt-3 rounded-lg border-2 px-2 py-1"
-                type="button"
-                onClick={() => setAddingCorrection(false)}
-              >
-                Cancel
-              </button>
+            <div className="absolute left-0 bottom-0 w-screen">
+              <AudioInput onSubmit={submitCorrection} onCancel={() => setAddingCorrection(false)} />
             </div>
           )}
 
           {hasCorrections && (
-            <div className="w-full">
-              <h2 className="mt-5 text-center text-xl">Corrections</h2>
+            <>
               {response.corrections.map((cor) => (
-                <div className="my-2 w-full" key={cor.id}>
-                  {cor.audio?.audioUrl && (
-                    <audio src={cor.audio.audioUrl} controls className="w-full rounded-lg">
-                      <source />
-                    </audio>
-                  )}
-
-                  {cor.diff.length > 0 && (
-                    <div className="my-4 rounded-2xl bg-stone-100 py-4 px-5">
-                      <DiffBlock diff={cor.diff} />
-                    </div>
-                  )}
-                </div>
+                <Correction key={cor.id} correction={cor} />
               ))}
-            </div>
-          )}
-
-          {hasCorrections && !hasDiff && !addingDiff && (
-            <button
-              type="button"
-              onClick={() => setAddingDiff(true)}
-              className="rounded-lg bg-slate-300 py-1 px-3 font-medium text-slate-800"
-            >
-              Add Diff
-            </button>
-          )}
-
-          {addingDiff && correctionId && (
-            <div className="w-full">
-              <DiffInput correctionId={correctionId} />
-              <button
-                className="float-right mt-3 rounded-lg border-2 px-2 py-1"
-                type="button"
-                onClick={() => setAddingDiff(false)}
-              >
-                Cancel
-              </button>
-            </div>
+            </>
           )}
         </div>
       </div>

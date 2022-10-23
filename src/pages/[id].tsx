@@ -2,7 +2,7 @@ import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import AudioInput from "../components/AudioInput"
-import DiffBlock from "../components/DiffBlock"
+import Correction from "../components/Correction"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 
@@ -55,49 +55,39 @@ const Response: NextPage<Props> = ({ id }) => {
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container mx-auto flex items-center justify-center p-6">
-        <div className="flex w-full flex-col items-center gap-4 sm:w-96">
-          <h1 className="text-2xl">{response.prompt.prompt}</h1>
+      <div
+        className={`container mx-auto flex h-screen flex-col items-center p-6 ${
+          hasCorrections ? "justify-start text-left" : "justify-center text-center"
+        }`}
+      >
+        <div className={`flex w-full flex-col items-stretch gap-4 sm:w-96`}>
+          <h1 className={`w-full text-2xl`}>{response.prompt.prompt}</h1>
 
-          {/* Show audio or AudioInput */}
-          {hasAudio ? (
-            <audio
-              src={response.audio?.audioUrl as string}
-              className="w-full rounded-lg"
-              controls
-            />
-          ) : (
-            <AudioInput onSubmit={submitResponseAudio} />
+          {hasAudio && (
+            <audio src={response.audio?.audioUrl as string} className="rounded-lg" controls />
           )}
 
-          {/* Show message if corrections are pending */}
           {hasAudio && !hasCorrections && (
-            <div className="p-6 text-center">be patient, correction coming soon</div>
+            <div className="p-6 text-xs">
+              Thanks for your submission! <br /> You&apos;ll be notified when feedback is ready.
+            </div>
           )}
 
-          {/* Show corrections */}
           {hasCorrections && (
-            <div className="w-full">
+            <>
               <h2 className="mt-5 text-xl">Corrections</h2>
               {response.corrections.map((cor) => (
-                <div className="my-2 w-full" key={cor.id}>
-                  {cor.audio?.audioUrl && (
-                    <audio src={cor.audio.audioUrl} controls className="w-full rounded-lg">
-                      <source />
-                    </audio>
-                  )}
-
-                  {cor.diff.length > 0 && (
-                    <div className="my-4 rounded-2xl bg-stone-100 py-4 px-5">
-                      <DiffBlock diff={cor.diff} />
-                    </div>
-                  )}
-                </div>
+                <Correction key={cor.id} correction={cor} />
               ))}
-            </div>
+            </>
           )}
         </div>
       </div>
+      {!hasAudio && (
+        <div className="absolute left-0 bottom-0 w-screen">
+          <AudioInput onSubmit={submitResponseAudio} />
+        </div>
+      )}
     </>
   )
 }

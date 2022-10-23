@@ -12,12 +12,13 @@ let blob: Blob
 
 type Props = {
   onSubmit: (b: Blob) => void
+  onCancel?: () => void
 }
 
-const Input = (props: Props) => {
-  const { onSubmit } = props
+const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const [audioURL, setAudioURL] = useState<string>()
   const [recording, setRecording] = useState(false)
+  const [audioDuration, setAudioDuration] = useState(0)
   const [success, setSuccess] = useState(false)
 
   const handleStart = async () => {
@@ -43,51 +44,63 @@ const Input = (props: Props) => {
   }
 
   const handleSubmit = async () => {
-    await onSubmit(blob)
+    onSubmit(blob)
     setSuccess(true)
   }
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl p-4 ring-4 ring-slate-300 md:w-96">
-      <div className="flex w-full justify-between pb-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full ring-2 ring-slate-200 ring-offset-2">
+    <div className="flex flex-col items-center justify-center p-4 ring-4 ring-slate-300">
+      {!audioURL && (
+        <>
+          {recording && <p className="mb-2">{audioDuration.toFixed(2)}</p>}
           <button
             type="button"
-            className={
-              !recording ? "h-14 w-14 rounded-full bg-red-600" : "h-12 w-12 rounded-xl bg-red-600"
-            }
             onClick={!recording ? handleStart : handleStop}
-          ></button>
-        </div>
-        <div className={`${success && "hidden"}`}>
-          <button
-            type="button"
-            disabled={recording || !audioURL}
-            className="my-2 w-28 rounded-lg bg-slate-300 font-medium text-slate-900 disabled:bg-slate-200 disabled:text-slate-400"
-            onClick={handleReset}
+            className={`flex h-14 w-14 items-center justify-center rounded-full ${
+              recording ? "ring-2 ring-slate-300" : "bg-red-500"
+            }`}
           >
-            RESET
+            {recording && <div className={"h-8 w-8 rounded-lg bg-red-600"} />}
           </button>
-          <button
-            type="button"
-            disabled={recording || !audioURL}
-            className="my-2 w-28 rounded-lg bg-slate-300 font-medium text-slate-800 disabled:bg-slate-200 disabled:text-slate-400"
-            onClick={handleSubmit}
-          >
-            SUBMIT
-          </button>
+        </>
+      )}
+      {audioURL && (
+        <div>
+          <audio
+            controls
+            src={audioURL}
+            className={`w-full rounded-lg ${!audioURL && "opacity-50"}`}
+          ></audio>
+          <div className={`mt-2 flex flex-row justify-around`}>
+            <button
+              type="button"
+              disabled={recording || !audioURL}
+              className="my-2 w-28 rounded py-1 font-medium text-orange-500 ring-2 ring-orange-500"
+              onClick={handleReset}
+            >
+              Discard
+            </button>
+            <button
+              type="button"
+              disabled={recording || !audioURL}
+              className="my-2 w-28 rounded bg-orange-500 py-1 font-medium text-white ring-2 ring-orange-500"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
         </div>
-        <span className={`flex items-center justify-center text-green-500 ${!success && "hidden"}`}>
-          Audio successfully submitted
-        </span>
-      </div>
-      <audio
-        src={audioURL}
-        controls
-        className={`w-full rounded-lg ${!audioURL && "opacity-50"}`}
-      ></audio>
+      )}
+      {onCancel && (
+        <button className="absolute top-0 right-2" onClick={onCancel}>
+          X
+        </button>
+      )}
+      <span className={`flex items-center justify-center text-green-500 ${!success && "hidden"}`}>
+        Audio successfully submitted
+      </span>
     </div>
   )
 }
 
-export default Input
+export default AudioInput
