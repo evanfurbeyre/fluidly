@@ -11,7 +11,7 @@ type Props = {
 }
 
 const Response: NextPage<Props> = ({ id }) => {
-  const getResponseQry = trpc.response.getResponse.useQuery({ id })
+  const getResponseQry = trpc.response.findUnique.useQuery({ id })
   const addResponseAudio = trpc.response.addResponseAudio.useMutation()
   const responseAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
 

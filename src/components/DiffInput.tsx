@@ -19,7 +19,7 @@ const defaultDiffFrag: DiffFrag = {
 }
 
 const DiffInput: NextPage<Props> = ({ correctionId }) => {
-  const addDiffFragments = trpc.response.addDiffFragments.useMutation()
+  const addDiffFragments = trpc.correction.addDiffFragments.useMutation()
   const [diffFrag, setDiffFrag] = useState<DiffFrag>(defaultDiffFrag)
   const [result, setResult] = useState<DiffFrag[]>([])
 

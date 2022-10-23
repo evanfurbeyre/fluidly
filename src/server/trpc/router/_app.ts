@@ -1,11 +1,17 @@
+import { correctionRouter } from "./correction"
+import { promptRouter } from "./prompt"
+import { userRouter } from "./user"
 // src/server/trpc/router/_app.ts
 import { router } from "../trpc"
-import { responseRouter } from "./response"
 import { authRouter } from "./auth"
+import { responseRouter } from "./response"
 
 export const appRouter = router({
-  response: responseRouter,
   auth: authRouter,
+  user: userRouter,
+  prompt: promptRouter,
+  response: responseRouter,
+  correction: correctionRouter,
 })
 
 // export type definition of API

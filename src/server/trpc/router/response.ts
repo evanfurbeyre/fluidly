@@ -14,7 +14,7 @@ const client = new S3Client({
 })
 
 export const responseRouter = router({
-  createResponse: publicProcedure
+  create: publicProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -32,63 +32,18 @@ export const responseRouter = router({
         },
       })
     }),
-  deleteResponse: publicProcedure.input(z.object({ id: z.string() })).mutation(({ input, ctx }) => {
-    return ctx.prisma.response.delete({ where: { id: input.id } })
-  }),
-  addResponseAudio: publicProcedure
+
+  delete: publicProcedure
     .input(
       z.object({
-        key: z.string(),
-        responseId: z.string(),
-        language: z.string(),
+        id: z.string(),
       }),
     )
-    .mutation(async ({ input, ctx }) => {
-      const audio = await ctx.prisma.audio.create({
-        data: {
-          key: input.key,
-          bucket: env.AWS_AUDIO_INPUT_BUCKET,
-          language: input.language,
-          responses: {
-            connect: {
-              id: input.responseId,
-            },
-          },
-        },
-      })
-      return audio
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.response.delete({ where: { id: input.id } })
     }),
 
-  getPrompt: publicProcedure
-    .input(z.object({ id: z.string() }).optional())
-    .query(async ({ input, ctx }) => {
-      return input?.id
-        ? ctx.prisma.prompt.findUnique({ where: { id: input.id } })
-        : ctx.prisma.prompt.findFirst()
-    }),
-
-  getUser: publicProcedure
-    .input(z.object({ id: z.string() }).optional())
-    .query(async ({ input, ctx }) => {
-      return input?.id
-        ? ctx.prisma.user.findUnique({ where: { id: input.id } })
-        : ctx.prisma.user.findFirst()
-    }),
-
-  getAudioUploadUrl: publicProcedure.query(async () => {
-    const key = `${v4()}.ogg`
-    const command = new PutObjectCommand({
-      Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-      Key: key,
-    })
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 })
-    return {
-      key,
-      url,
-    }
-  }),
-
-  getResponse: publicProcedure
+  findUnique: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -138,7 +93,7 @@ export const responseRouter = router({
       return res
     }),
 
-  addCorrection: publicProcedure
+  addResponseAudio: publicProcedure
     .input(
       z.object({
         key: z.string(),
@@ -152,35 +107,26 @@ export const responseRouter = router({
           key: input.key,
           bucket: env.AWS_AUDIO_INPUT_BUCKET,
           language: input.language,
+          responses: {
+            connect: {
+              id: input.responseId,
+            },
+          },
         },
       })
-      await ctx.prisma.correction.create({
-        data: {
-          responseId: input.responseId,
-          audioId: audio.id,
-        },
-      })
+      return audio
     }),
 
-  addDiffFragments: publicProcedure
-    .input(
-      z.object({
-        correctionId: z.string(),
-        diff: z.array(
-          z.object({
-            type: z.enum(["original", "addition", "deletion"]),
-            content: z.string(),
-          }),
-        ),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { correctionId, diff } = input
-      return ctx.prisma.diffFragment.createMany({
-        data: diff.map((d) => ({
-          ...d,
-          correctionId,
-        })),
-      })
-    }),
+  getAudioUploadUrl: publicProcedure.query(async () => {
+    const key = `${v4()}.ogg`
+    const command = new PutObjectCommand({
+      Bucket: env.AWS_AUDIO_INPUT_BUCKET,
+      Key: key,
+    })
+    const url = await getSignedUrl(client, command, { expiresIn: 3600 })
+    return {
+      key,
+      url,
+    }
+  }),
 })

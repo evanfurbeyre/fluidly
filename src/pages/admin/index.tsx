@@ -1,15 +1,13 @@
-import { Prisma } from "@prisma/client"
+import { Prompt, User } from "@prisma/client"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { useState } from "react"
 import { prisma } from "../../server/db/client"
 import { trpc } from "../../utils/trpc"
+import { ResponseWithRelations } from "../../utils/types"
 
-type Responses = Prisma.PromiseReturnType<typeof getResponses>
-type Props = {
-  responses: Responses
-}
+type Props = { responses: ResponseWithRelations[] }
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
   return <td className="w-96">{children}</td>
@@ -17,17 +15,7 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 
 const Admin: NextPage<Props> = (props) => {
   const [responses, setResponses] = useState(props.responses)
-  const defaultPrompt = trpc.response.getPrompt.useQuery()
-  const defaultUser = trpc.response.getUser.useQuery()
-
-  const createResponse = trpc.response.createResponse.useMutation({
-    onSettled(data, error) {
-      if (error) console.log("error:", error)
-      if (data) setResponses([...responses, data])
-    },
-  })
-
-  const deleteResponse = trpc.response.deleteResponse.useMutation({
+  const deleteResponse = trpc.response.delete.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
       if (data) setResponses(responses.filter(({ id }) => id !== data.id))
@@ -85,26 +73,159 @@ const Admin: NextPage<Props> = (props) => {
           </tbody>
         </table>
         <div className="mt-5">
-          <button
-            className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-            onClick={() => {
-              if (!defaultPrompt.data?.id) {
-                return console.log("Could not create response: default prompt not found")
-              }
-              if (!defaultUser.data?.id) {
-                return console.log("Could not create response: default user not found")
-              }
-              createResponse.mutate({
-                userId: defaultUser.data.id,
-                promptId: defaultPrompt.data.id,
-              })
-            }}
-          >
-            New response
-          </button>
+          <CreateResponseForm onComplete={(r) => setResponses((responses) => [...responses, r])} />
+          <CreateUserForm />
+          <CreatePromptForm />
         </div>
       </div>
     </>
+  )
+}
+
+type CreateResponseFormProps = {
+  onComplete: (response: ResponseWithRelations) => void
+}
+
+const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
+  const [selectedUser, setSelectedUser] = useState<User>()
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
+  const users = trpc.user.findMany.useQuery()
+  const prompts = trpc.prompt.findMany.useQuery()
+  const createResponse = trpc.response.create.useMutation({
+    onSettled(data, error) {
+      if (error) console.log("error:", error)
+      if (data) onComplete(data)
+    },
+  })
+
+  console.log("selectedUser.id:", selectedUser?.id)
+
+  return (
+    <div className="flex flex-row items-center rounded p-2">
+      <label className="mr-2">User:</label>
+      <select
+        value={selectedUser?.id ?? ""}
+        className="mr-2 rounded border-2 px-2 py-2"
+        onChange={(e) => {
+          const user = users.data?.find(({ id }) => id === e.target.value)
+          setSelectedUser(user)
+        }}
+      >
+        <option disabled={true} value={""}>
+          -- Choose an option --
+        </option>
+        {users.data?.map(({ id, name }) => {
+          return (
+            <option key={id} value={id}>
+              {name ?? "Unnamed User"}
+            </option>
+          )
+        })}
+      </select>
+      <label className="mr-2">Prompt:</label>
+      <select
+        onChange={(e) => setSelectedPrompt(prompts.data?.find(({ id }) => id === e.target.value))}
+        className="mr-2 rounded border-2 px-2 py-2"
+        value={selectedPrompt?.id ?? ""}
+      >
+        <option disabled={true} value={""}>
+          -- Choose an option --
+        </option>
+        {prompts.data?.map(({ id, prompt }) => {
+          return (
+            <option key={id} value={id}>
+              {prompt}
+            </option>
+          )
+        })}
+      </select>
+      <button
+        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 disabled:bg-blue-300"
+        disabled={!selectedUser?.id || !selectedPrompt?.id}
+        onClick={() => {
+          if (!selectedUser?.id || !selectedPrompt?.id) return
+          createResponse.mutate({ userId: selectedUser.id, promptId: selectedPrompt.id })
+        }}
+      >
+        Create response
+      </button>
+    </div>
+  )
+}
+
+const CreateUserForm = () => {
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [statusMessage, setStatusMessage] = useState({ color: "black", message: "" })
+  const createUser = trpc.user.create.useMutation({
+    onSettled(data, error) {
+      if (error) setStatusMessage({ color: "red", message: error.message })
+      if (data) setStatusMessage({ color: "green", message: "success" })
+    },
+  })
+
+  return (
+    <div className="flex flex-row items-center rounded p-2">
+      <label className="mr-2">Name:</label>
+      <input onChange={(e) => setName(e.target.value)} value={name} className="mr-2 border-2" />
+      <label className="mr-2">Email:</label>
+      <input onChange={(e) => setEmail(e.target.value)} value={email} className="mr-2 border-2" />
+      <button
+        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+        onClick={() => {
+          if (!email.trim() || !name.trim()) {
+            setStatusMessage({ color: "red", message: "email and name required" })
+            return
+          }
+          createUser.mutate({ email, name })
+        }}
+      >
+        Create user
+      </button>
+      <p className={`text-${statusMessage.color}-500 ml-2`}>{statusMessage.message}</p>
+    </div>
+  )
+}
+
+const CreatePromptForm = () => {
+  const [lang, setLang] = useState("")
+  const [prompt, setPrompt] = useState("")
+  const [statusMessage, setStatusMessage] = useState({ color: "black", message: "" })
+
+  const createPrompt = trpc.prompt.create.useMutation({
+    onSettled(data, error) {
+      if (error) setStatusMessage({ color: "red", message: error.message })
+      if (data) setStatusMessage({ color: "green", message: "success" })
+    },
+  })
+
+  return (
+    <div className="flex flex-row items-center rounded p-2">
+      <label className="mr-2">Prompt:</label>
+      <input onChange={(e) => setPrompt(e.target.value)} value={prompt} className="mr-2 border-2" />
+      <label className="mr-2">Language:</label>
+      <select
+        onChange={(e) => setLang(e.target.value)}
+        className="mr-2 rounded border-2 px-2 py-2"
+        value={lang}
+      >
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+      </select>
+      <button
+        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+        onClick={() => {
+          if (!lang.trim() || !prompt.trim()) {
+            setStatusMessage({ color: "red", message: "prompt and language required" })
+            return
+          }
+          createPrompt.mutate({ language: lang, prompt })
+        }}
+      >
+        Create prompt
+      </button>
+      <p className={`text-${statusMessage.color}-500 ml-2`}>{statusMessage.message}</p>
+    </div>
   )
 }
 
@@ -121,7 +242,7 @@ const getResponses = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const responses: Responses = await getResponses()
+  const responses: ResponseWithRelations[] = await getResponses()
   return {
     props: {
       responses,
