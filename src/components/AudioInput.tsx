@@ -30,12 +30,12 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
     recorder.onstop = async () => {
       blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
       setAudioURL(window.URL.createObjectURL(blob))
+      setRecording(false)
     }
     recorder.start()
   }
 
   const handleStop = async () => {
-    setRecording(false)
     recorder?.stop()
   }
 
