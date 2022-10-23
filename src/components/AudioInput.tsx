@@ -1,3 +1,4 @@
+import { CheckIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
 import Audio from "./Audio"
 
@@ -12,7 +13,7 @@ let chunks: Blob[] = []
 let blob: Blob
 
 type Props = {
-  onSubmit: (b: Blob) => void
+  onSubmit: (b: Blob) => Promise<void>
   onCancel?: () => void
 }
 
@@ -21,6 +22,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const [recording, setRecording] = useState(false)
   const [audioDuration, setAudioDuration] = useState(0)
   const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleStart = async () => {
     setRecording(true)
@@ -45,7 +47,9 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   }
 
   const handleSubmit = async () => {
-    onSubmit(blob)
+    setLoading(true)
+    await onSubmit(blob)
+    setLoading(false)
     setSuccess(true)
   }
 
@@ -72,7 +76,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="my-2 w-28 rounded py-1 font-medium text-orange-500 ring-2 ring-orange-500"
+              className="btn btn-outline w-28"
               onClick={handleReset}
             >
               Discard
@@ -80,10 +84,10 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="my-2 w-28 rounded bg-orange-500 py-1 font-medium text-white ring-2 ring-orange-500"
+              className={`btn w-28 ${loading && "loading"}`}
               onClick={handleSubmit}
             >
-              Submit
+              {success ? <CheckIcon className="h-6 w-6" /> : "Submit"}
             </button>
           </div>
         </div>
@@ -93,9 +97,6 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
           X
         </button>
       )}
-      <span className={`flex items-center justify-center text-green-500 ${!success && "hidden"}`}>
-        Audio successfully submitted
-      </span>
     </div>
   )
 }
