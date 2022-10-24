@@ -72,7 +72,7 @@ const Admin: NextPage<Props> = (props) => {
             ))}
           </tbody>
         </table>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-col gap-3">
           <CreateResponseForm onComplete={(r) => setResponses((responses) => [...responses, r])} />
           <CreateUserForm />
           <CreatePromptForm />
@@ -98,10 +98,8 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
     },
   })
 
-  console.log("selectedUser.id:", selectedUser?.id)
-
   return (
-    <div className="flex flex-row items-center rounded p-2">
+    <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
       <label className="mr-2">User:</label>
       <select
         value={selectedUser?.id ?? ""}
@@ -165,7 +163,7 @@ const CreateUserForm = () => {
   })
 
   return (
-    <div className="flex flex-row items-center rounded p-2">
+    <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
       <label className="mr-2">Name:</label>
       <input onChange={(e) => setName(e.target.value)} value={name} className="mr-2 border-2" />
       <label className="mr-2">Email:</label>
@@ -200,7 +198,7 @@ const CreatePromptForm = () => {
   })
 
   return (
-    <div className="flex flex-row items-center rounded p-2">
+    <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
       <label className="mr-2">Prompt:</label>
       <input onChange={(e) => setPrompt(e.target.value)} value={prompt} className="mr-2 border-2" />
       <label className="mr-2">Language:</label>
@@ -209,6 +207,9 @@ const CreatePromptForm = () => {
         className="mr-2 rounded border-2 px-2 py-2"
         value={lang}
       >
+        <option disabled={true} value={""}>
+          -- Choose an option --
+        </option>
         <option value="es">Spanish</option>
         <option value="fr">French</option>
       </select>
