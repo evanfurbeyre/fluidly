@@ -1,14 +1,10 @@
-import { useSession } from "next-auth/react"
-import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
-
 type Props = {
   src: string
   withOptions?: boolean
 }
 
 const Audio = (props: Props) => {
-  const { src, withOptions } = props
-  const { data: session } = useSession()
+  const { src } = props
 
   return (
     <div className="flex">
