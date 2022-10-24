@@ -14,25 +14,28 @@ datasource db {
 
 // Necessary for Next auth
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text // Add @db.Text this for strings longer that 191 chars!
-  access_token      String? @db.Text
+  refresh_token     String?  @db.Text // Add @db.Text this for strings longer that 191 chars!
+  access_token      String?  @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?  @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Session {
   id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -41,6 +44,8 @@ model Session {
 
 model User {
   id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   name          String?
   email         String     @unique
   emailVerified DateTime?
@@ -52,6 +57,7 @@ model User {
 
 model VerificationToken {
   identifier String
+  createdAt  DateTime @default(now())
   token      String   @unique
   expires    DateTime
 
@@ -62,6 +68,8 @@ model VerificationToken {
 
 model Response {
   id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   prompt      Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)
@@ -73,6 +81,8 @@ model Response {
 
 model Correction {
   id         String         @id @default(cuid())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
   audio      Audio          @relation(fields: [audioId], references: [id])
   audioId    String
   diff       DiffFragment[]
@@ -82,6 +92,8 @@ model Correction {
 
 model Prompt {
   id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   prompt    String
   language  String
   responses Response[]
@@ -89,6 +101,8 @@ model Prompt {
 
 model Audio {
   id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   bucket      String
   key         String
   audioUrl    String?
@@ -99,6 +113,8 @@ model Audio {
 
 model DiffFragment {
   id           String      @id @default(cuid())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   content      String
   type         DiffType
   correction   Correction? @relation(fields: [correctionId], references: [id], onDelete: Cascade)

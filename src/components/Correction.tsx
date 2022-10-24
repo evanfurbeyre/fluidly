@@ -25,7 +25,7 @@ const Correction = ({ correction }: CorrectionProps) => {
         <button
           type="button"
           onClick={() => setAddingDiff(true)}
-          className="btn btn-sm float-right"
+          className="btn-sm btn float-right mt-1"
         >
           Add text
         </button>
