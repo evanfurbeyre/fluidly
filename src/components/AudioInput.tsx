@@ -25,7 +25,6 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const [duration, setDuration] = useState(0)
 
   const handleStart = async () => {
-    setRecording(true)
     recorder = await getRecorder()
     if (!recorder) return null
     recorder.ondataavailable = (e) => chunks.push(e.data)
@@ -35,6 +34,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
       setRecording(false)
     }
     recorder.start()
+    setRecording(true)
   }
 
   const handleStop = async () => {
