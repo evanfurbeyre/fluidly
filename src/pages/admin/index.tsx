@@ -1,5 +1,5 @@
 import { Prompt, User } from "@prisma/client"
-import type { GetStaticProps, NextPage } from "next"
+import type { InferGetServerSidePropsType, NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { useState } from "react"
@@ -9,14 +9,17 @@ import { ResponseWithRelations } from "../../utils/types"
 
 import { XMarkIcon } from "@heroicons/react/24/solid"
 
-type Props = { responses: ResponseWithRelations[] }
-
 const Cell = ({ children }: { children: React.ReactNode }) => {
   return <td className="w-96">{children}</td>
 }
 
-const Admin: NextPage<Props> = (props) => {
+type AdminPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
+
+const Admin: NextPage<AdminPageProps> = (props) => {
   const [responses, setResponses] = useState(props.responses)
+  const [prompts, setPrompts] = useState(props.prompts)
+  const [users, setUsers] = useState(props.users)
+
   const deleteResponse = trpc.response.delete.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
@@ -48,7 +51,7 @@ const Admin: NextPage<Props> = (props) => {
                 <Cell>
                   <div className="my-1 mr-4 flex flex-row">
                     <button
-                      className="btn-outline btn btn-error btn-square btn-xs mr-2"
+                      className="btn-outline btn-error btn-square btn-xs btn mr-2"
                       onClick={() => {
                         if (window.confirm("Sure you want to delete this?")) {
                           deleteResponse.mutate({ id: resp.id })
@@ -75,9 +78,13 @@ const Admin: NextPage<Props> = (props) => {
           </tbody>
         </table>
         <div className="mt-5 flex flex-col gap-3">
-          <CreateResponseForm onComplete={(r) => setResponses((responses) => [...responses, r])} />
-          <CreateUserForm />
-          <CreatePromptForm />
+          <CreateResponseForm
+            users={users}
+            prompts={prompts}
+            onComplete={(r) => setResponses((responses) => [...responses, r])}
+          />
+          <CreateUserForm onComplete={(u) => setUsers((users) => [...users, u])} />
+          <CreatePromptForm onComplete={(p) => setPrompts((prompts) => [...prompts, p])} />
         </div>
       </div>
     </>
@@ -85,14 +92,15 @@ const Admin: NextPage<Props> = (props) => {
 }
 
 type CreateResponseFormProps = {
+  users: User[]
+  prompts: Prompt[]
   onComplete: (response: ResponseWithRelations) => void
 }
 
-const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
-  const [selectedUser, setSelectedUser] = useState<User>()
-  const [selectedPrompt, setSelectedPrompt] = useState<Prompt>()
-  const users = trpc.user.findMany.useQuery()
-  const prompts = trpc.prompt.findMany.useQuery()
+const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormProps) => {
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(users[0])
+  const [selectedPrompt, setSelectedPrompt] = useState<Prompt | undefined>(prompts[0])
+
   const createResponse = trpc.response.create.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
@@ -107,14 +115,11 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
         value={selectedUser?.id ?? ""}
         className="select-primary select select-sm"
         onChange={(e) => {
-          const user = users.data?.find(({ id }) => id === e.target.value)
+          const user = users.find(({ id }) => id === e.target.value)
           setSelectedUser(user)
         }}
       >
-        <option disabled={true} value={""}>
-          -- Choose an option --
-        </option>
-        {users.data?.map(({ id, name }) => {
+        {users.map(({ id, name }) => {
           return (
             <option key={id} value={id}>
               {name ?? "Unnamed User"}
@@ -124,14 +129,11 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
       </select>
       <label className="mr-2">Prompt:</label>
       <select
-        onChange={(e) => setSelectedPrompt(prompts.data?.find(({ id }) => id === e.target.value))}
+        onChange={(e) => setSelectedPrompt(prompts.find(({ id }) => id === e.target.value))}
         className="select-primary select select-sm"
         value={selectedPrompt?.id ?? ""}
       >
-        <option disabled={true} value={""}>
-          -- Choose an option --
-        </option>
-        {prompts.data?.map(({ id, prompt }) => {
+        {prompts.map(({ id, prompt }) => {
           return (
             <option key={id} value={id}>
               {prompt}
@@ -140,7 +142,7 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
         })}
       </select>
       <button
-        className="btn btn-primary btn-sm"
+        className="btn-primary btn-sm btn"
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
@@ -153,14 +155,18 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
   )
 }
 
-const CreateUserForm = () => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
+const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
   const [statusMessage, setStatusMessage] = useState({ color: "black", message: "" })
+  const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
+
   const createUser = trpc.user.create.useMutation({
     onSettled(data, error) {
       if (error) setStatusMessage({ color: "red", message: error.message })
-      if (data) setStatusMessage({ color: "green", message: "success" })
+      if (data) {
+        setStatusMessage({ color: "green", message: "success" })
+        onComplete(data)
+      }
     },
   })
 
@@ -179,7 +185,7 @@ const CreateUserForm = () => {
         value={email}
       />
       <button
-        className="btn btn-primary btn-sm"
+        className="btn-primary btn-sm btn"
         onClick={() => {
           if (!email.trim() || !name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -195,15 +201,18 @@ const CreateUserForm = () => {
   )
 }
 
-const CreatePromptForm = () => {
-  const [lang, setLang] = useState("")
-  const [prompt, setPrompt] = useState("")
+const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) => {
   const [statusMessage, setStatusMessage] = useState({ color: "black", message: "" })
+  const [prompt, setPrompt] = useState("")
+  const [lang, setLang] = useState("es")
 
   const createPrompt = trpc.prompt.create.useMutation({
     onSettled(data, error) {
       if (error) setStatusMessage({ color: "red", message: error.message })
-      if (data) setStatusMessage({ color: "green", message: "success" })
+      if (data) {
+        setStatusMessage({ color: "green", message: "success" })
+        onComplete(data)
+      }
     },
   })
 
@@ -221,14 +230,11 @@ const CreatePromptForm = () => {
         className="select-primary select select-sm"
         value={lang}
       >
-        <option disabled={true} value={""}>
-          -- Choose an option --
-        </option>
         <option value="es">Spanish</option>
         <option value="fr">French</option>
       </select>
       <button
-        className="btn btn-primary btn-sm"
+        className="btn-primary btn-sm btn"
         onClick={() => {
           if (!lang.trim() || !prompt.trim()) {
             setStatusMessage({ color: "red", message: "prompt and language required" })
@@ -244,25 +250,26 @@ const CreatePromptForm = () => {
   )
 }
 
-const getResponses = async () => {
-  const responses = await prisma.response.findMany({
-    include: {
-      user: true,
-      audio: true,
-      corrections: true,
-      prompt: true,
-    },
-  })
-  return responses
-}
+export const getServerSideProps = async () => {
+  const [responses, prompts, users] = await Promise.all([
+    prisma.response.findMany({
+      include: {
+        user: true,
+        audio: true,
+        corrections: true,
+        prompt: true,
+      },
+    }),
+    prisma.prompt.findMany(),
+    prisma.user.findMany(),
+  ])
 
-export const getStaticProps: GetStaticProps = async () => {
-  const responses: ResponseWithRelations[] = await getResponses()
   return {
     props: {
       responses,
+      prompts,
+      users,
     },
-    revalidate: 10,
   }
 }
 

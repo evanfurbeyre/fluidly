@@ -140,7 +140,7 @@ const Response: NextPage<Props> = ({ id }) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn btn-primary btn-sm"
+                className="btn-outline btn-primary btn-sm btn"
               >
                 Add Correction
               </button>
@@ -164,17 +164,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id as string
 
   return {
-    props: {
-      id,
-    },
-    revalidate: 10, // In seconds
+    props: { id },
+    revalidate: 10,
   }
 }
 
 export const getStaticPaths = async () => {
   const responses = await prisma.response.findMany()
   const paths = responses.map(({ id }) => ({ params: { id } }))
-  return { paths, fallback: false }
+  return { paths, fallback: "blocking" }
 }
 
 export default Response
