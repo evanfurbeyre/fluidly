@@ -74,7 +74,7 @@ const Response: NextPage<Props> = ({ id }) => {
             <button
               type="button"
               onClick={() => setAddingCorrection(true)}
-              className="btn btn-outline btn-sm"
+              className="btn-outline btn btn-primary btn-sm"
             >
               Add Correction
             </button>
