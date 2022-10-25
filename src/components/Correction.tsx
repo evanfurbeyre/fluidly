@@ -4,9 +4,12 @@ import Audio from "./Audio"
 import DiffBlock from "./DiffBlock"
 import DiffInput from "./DiffInput"
 
-type CorrectionProps = { correction: CorrectionWithRelations }
+type CorrectionProps = {
+  correction: CorrectionWithRelations
+  refetchResponse: () => void
+}
 
-const Correction = ({ correction }: CorrectionProps) => {
+const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
   const { id, audio, diff } = correction
   const [addingDiff, setAddingDiff] = useState(false)
 
@@ -33,7 +36,13 @@ const Correction = ({ correction }: CorrectionProps) => {
 
       {addingDiff && (
         <>
-          <DiffInput correctionId={id} />
+          <DiffInput
+            correctionId={id}
+            onSubmit={() => {
+              setAddingDiff(false)
+              refetchResponse()
+            }}
+          />
           <button
             className="float-right rounded-lg border-2 px-2 py-1 text-sm"
             type="button"

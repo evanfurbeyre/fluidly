@@ -6,6 +6,7 @@ import DiffBlock from "./DiffBlock"
 
 type Props = {
   correctionId: string
+  onSubmit: () => void
 }
 
 type DiffFrag = {
@@ -18,7 +19,7 @@ const defaultDiffFrag: DiffFrag = {
   content: "",
 }
 
-const DiffInput: NextPage<Props> = ({ correctionId }) => {
+const DiffInput: NextPage<Props> = ({ correctionId, onSubmit }) => {
   const addDiffFragments = trpc.correction.addDiffFragments.useMutation()
   const [diffFrag, setDiffFrag] = useState<DiffFrag>(defaultDiffFrag)
   const [result, setResult] = useState<DiffFrag[]>([])
@@ -89,7 +90,10 @@ const DiffInput: NextPage<Props> = ({ correctionId }) => {
           Start over
         </button>
         <button
-          onClick={() => addDiffFragments.mutate({ correctionId, diff: result })}
+          onClick={() => {
+            addDiffFragments.mutate({ correctionId, diff: result })
+            setTimeout(onSubmit, 1000)
+          }}
           className="rounded-lg bg-orange-400 py-1 px-2 text-white"
         >
           Submit

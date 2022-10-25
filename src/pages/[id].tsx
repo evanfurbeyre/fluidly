@@ -27,7 +27,7 @@ const Response: NextPage<Props> = ({ id }) => {
     return <></>
   }
 
-  const response = getResponseQry.data
+  const { data: response, refetch: refetchResponse } = getResponseQry
   const { url: resUrl, key: resKey } = responseAudioUploadQry.data ?? {}
   const { url: corUrl, key: corKey } = correctionAudioUploadQry.data ?? {}
 
@@ -52,6 +52,7 @@ const Response: NextPage<Props> = ({ id }) => {
       responseId: response.id,
       language: response.prompt.language,
     })
+    setTimeout(refetchResponse, 1000) // hack... refetching right away doesn't return with response audio
   }
 
   const submitCorrection = async (blob: Blob) => {
@@ -69,6 +70,7 @@ const Response: NextPage<Props> = ({ id }) => {
       responseId: response.id,
       language: response.prompt.language,
     })
+    setTimeout(refetchResponse, 1000) // hack... refetching right away doesn't return with response audio
   }
 
   const hasAudio = typeof response.audio?.audioUrl === "string"
@@ -138,13 +140,13 @@ const Response: NextPage<Props> = ({ id }) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn btn-outline btn-sm"
+                className="btn-outline btn-sm btn"
               >
                 Add Correction
               </button>
             </div>
             {response.corrections.map((cor) => (
-              <Correction key={cor.id} correction={cor} />
+              <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
             ))}
           </div>
           {addingCorrection && (

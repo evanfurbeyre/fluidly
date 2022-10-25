@@ -99,7 +99,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className={`btn w-28 ${loading && "loading"}`}
+              className={`btn w-32 ${loading && "loading"}`}
               onClick={handleSubmit}
             >
               {success ? <CheckIcon className="h-6 w-6" /> : "Submit"}
