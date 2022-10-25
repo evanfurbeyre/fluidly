@@ -74,7 +74,7 @@ const Response: NextPage<Props> = ({ id }) => {
             <button
               type="button"
               onClick={() => setAddingCorrection(true)}
-              className="btn-outline btn btn-primary btn-sm"
+              className="btn-outline btn-primary btn-sm btn"
             >
               Add Correction
             </button>
@@ -89,7 +89,7 @@ const Response: NextPage<Props> = ({ id }) => {
           {hasCorrections && (
             <>
               {response.corrections.map((cor) => (
-                <Correction key={cor.id} correction={cor} />
+                <Correction key={cor.id} correction={cor} refetchResponse={() => console.log("")} />
               ))}
             </>
           )}
