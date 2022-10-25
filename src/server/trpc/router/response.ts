@@ -6,7 +6,7 @@ import { env } from "../../../env/server.mjs"
 import { publicProcedure, router } from "../trpc"
 
 const client = new S3Client({
-  region: env.AWS_REGION,
+  region: "us-east-2",
   credentials: {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
