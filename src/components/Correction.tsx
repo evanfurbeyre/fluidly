@@ -28,7 +28,7 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
         <button
           type="button"
           onClick={() => setAddingDiff(true)}
-          className="btn-sm btn float-right mt-1"
+          className="btn-primary btn-sm btn float-right mt-1"
         >
           Add text
         </button>
