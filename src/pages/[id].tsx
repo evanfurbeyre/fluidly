@@ -92,7 +92,7 @@ const Response: NextPage<Props> = ({ id }) => {
                 <span className="label-text mr-4">Admin?</span>
                 <input
                   type="checkbox"
-                  className="toggle"
+                  className="toggle-primary toggle toggle-sm"
                   checked={adminMode}
                   onChange={() => setAdminMode(!adminMode)}
                 />
@@ -126,7 +126,7 @@ const Response: NextPage<Props> = ({ id }) => {
                   <span className="label-text mr-4">Admin?</span>
                   <input
                     type="checkbox"
-                    className="toggle"
+                    className="toggle-primary toggle toggle-sm"
                     checked={adminMode}
                     onChange={() => setAdminMode(!adminMode)}
                   />
@@ -140,7 +140,7 @@ const Response: NextPage<Props> = ({ id }) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 Add Correction
               </button>

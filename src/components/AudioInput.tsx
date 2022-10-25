@@ -1,4 +1,4 @@
-import { CheckIcon } from "@heroicons/react/24/solid"
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { useEffect, useState } from "react"
 import Audio from "./Audio"
 
@@ -91,7 +91,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="btn-outline btn w-28"
+              className="btn-outline btn btn-error w-28"
               onClick={handleReset}
             >
               Discard
@@ -99,18 +99,20 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className={`btn w-32 ${loading && "loading"}`}
+              className={`btn btn-primary w-28 ${loading && "loading"}`}
               onClick={handleSubmit}
             >
-              {success ? <CheckIcon className="h-6 w-6" /> : "Submit"}
+              {success ? <CheckIcon className="h-6 w-6" /> : loading ? "" : "Submit"}
             </button>
           </div>
         </div>
       )}
       {onCancel && (
-        <button className="absolute top-0 right-2" onClick={onCancel}>
-          X
-        </button>
+        <div className="absolute top-1 right-1">
+          <button className="btn btn-ghost btn-square btn-xs" onClick={onCancel}>
+            <XMarkIcon />
+          </button>
+        </div>
       )}
     </div>
   )

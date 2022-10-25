@@ -7,6 +7,8 @@ import { prisma } from "../../server/db/client"
 import { trpc } from "../../utils/trpc"
 import { ResponseWithRelations } from "../../utils/types"
 
+import { XMarkIcon } from "@heroicons/react/24/solid"
+
 type Props = { responses: ResponseWithRelations[] }
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
@@ -46,14 +48,14 @@ const Admin: NextPage<Props> = (props) => {
                 <Cell>
                   <div className="my-1 mr-4 flex flex-row">
                     <button
-                      className="mr-2 rounded bg-red-500 py-0 px-2 text-white"
+                      className="btn-outline btn btn-error btn-square btn-xs mr-2"
                       onClick={() => {
                         if (window.confirm("Sure you want to delete this?")) {
                           deleteResponse.mutate({ id: resp.id })
                         }
                       }}
                     >
-                      X
+                      <XMarkIcon className="h-6 w-6" />
                     </button>
                     <Link href={`/${resp.id}`}>
                       <a className="underline">Submission</a>
@@ -100,10 +102,10 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
 
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
-      <label className="mr-2">User:</label>
+      <label>User:</label>
       <select
         value={selectedUser?.id ?? ""}
-        className="mr-2 rounded border-2 px-2 py-2"
+        className="select-primary select select-sm"
         onChange={(e) => {
           const user = users.data?.find(({ id }) => id === e.target.value)
           setSelectedUser(user)
@@ -123,7 +125,7 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
       <label className="mr-2">Prompt:</label>
       <select
         onChange={(e) => setSelectedPrompt(prompts.data?.find(({ id }) => id === e.target.value))}
-        className="mr-2 rounded border-2 px-2 py-2"
+        className="select-primary select select-sm"
         value={selectedPrompt?.id ?? ""}
       >
         <option disabled={true} value={""}>
@@ -138,7 +140,7 @@ const CreateResponseForm = ({ onComplete }: CreateResponseFormProps) => {
         })}
       </select>
       <button
-        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 disabled:bg-blue-300"
+        className="btn btn-primary btn-sm"
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
@@ -165,11 +167,19 @@ const CreateUserForm = () => {
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
       <label className="mr-2">Name:</label>
-      <input onChange={(e) => setName(e.target.value)} value={name} className="mr-2 border-2" />
-      <label className="mr-2">Email:</label>
-      <input onChange={(e) => setEmail(e.target.value)} value={email} className="mr-2 border-2" />
+      <input
+        onChange={(e) => setName(e.target.value)}
+        className="input-primary input input-sm"
+        value={name}
+      />
+      <label>Email:</label>
+      <input
+        onChange={(e) => setEmail(e.target.value)}
+        className="input-primary input input-sm"
+        value={email}
+      />
       <button
-        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+        className="btn btn-primary btn-sm"
         onClick={() => {
           if (!email.trim() || !name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -199,12 +209,16 @@ const CreatePromptForm = () => {
 
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
-      <label className="mr-2">Prompt:</label>
-      <input onChange={(e) => setPrompt(e.target.value)} value={prompt} className="mr-2 border-2" />
-      <label className="mr-2">Language:</label>
+      <label>Prompt:</label>
+      <input
+        onChange={(e) => setPrompt(e.target.value)}
+        className="input-primary input input-sm"
+        value={prompt}
+      />
+      <label>Language:</label>
       <select
         onChange={(e) => setLang(e.target.value)}
-        className="mr-2 rounded border-2 px-2 py-2"
+        className="select-primary select select-sm"
         value={lang}
       >
         <option disabled={true} value={""}>
@@ -214,7 +228,7 @@ const CreatePromptForm = () => {
         <option value="fr">French</option>
       </select>
       <button
-        className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+        className="btn btn-primary btn-sm"
         onClick={() => {
           if (!lang.trim() || !prompt.trim()) {
             setStatusMessage({ color: "red", message: "prompt and language required" })

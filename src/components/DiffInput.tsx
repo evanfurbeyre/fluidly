@@ -33,42 +33,41 @@ const DiffInput: NextPage<Props> = ({ correctionId, onSubmit }) => {
         className="my-2 w-full rounded-lg border-2 p-4 text-sm"
         onChange={(e) => setDiffFrag((d) => ({ ...d, content: e.target.value }))}
       ></textarea>
-      <div className="mb-3 flex w-full flex-row items-center justify-between text-sm">
-        <span>
+      <div className="my-2 flex w-full flex-row items-center justify-between">
+        <div className="btn-group">
           <input
             type="radio"
             id="original"
             name="diffType"
             value="original"
+            className="btn btn-xs"
+            data-title="original"
             checked={diffFrag.type === "original"}
             onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           />
-          <label className="ml-1">original</label>
-        </span>
-        <span>
           <input
             type="radio"
             id="addition"
             name="diffType"
             value="addition"
+            className="btn btn-xs"
+            data-title="addition"
             checked={diffFrag.type === "addition"}
             onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           ></input>
-          <label className="ml-1">addition</label>
-        </span>
-        <span>
           <input
             type="radio"
             id="deletion"
             name="diffType"
             value="deletion"
+            className="btn btn-xs"
+            data-title="deletion"
             checked={diffFrag.type === "deletion"}
             onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           />
-          <label className="ml-1">deletion</label>
-        </span>
+        </div>
         <button
-          className=" rounded-lg border-2 border-orange-500 py-1 px-2 text-orange-500"
+          className="btn-outline btn btn-primary btn-sm mr-2"
           onClick={() => {
             if (diffFrag.content === "") return
             setResult((r) => [...r, diffFrag])
@@ -78,15 +77,13 @@ const DiffInput: NextPage<Props> = ({ correctionId, onSubmit }) => {
           Add
         </button>
       </div>
+
       <h1>Result:</h1>
       <div className="my-2 w-full rounded-lg border-2 bg-white p-4">
         <DiffBlock diff={result as DiffFragment[]} />
       </div>
       <div className="self-end">
-        <button
-          className=" mr-2 rounded-lg border-2 border-red-500 py-1 px-2 text-red-500"
-          onClick={() => setResult([])}
-        >
+        <button className="btn-outline btn btn-error btn-sm mr-2" onClick={() => setResult([])}>
           Start over
         </button>
         <button
@@ -94,7 +91,7 @@ const DiffInput: NextPage<Props> = ({ correctionId, onSubmit }) => {
             addDiffFragments.mutate({ correctionId, diff: result })
             setTimeout(onSubmit, 1000)
           }}
-          className="rounded-lg bg-orange-400 py-1 px-2 text-white"
+          className="btn btn-primary btn-sm mr-2"
         >
           Submit
         </button>
