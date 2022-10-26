@@ -1,9 +1,11 @@
 import { Bars3Icon } from "@heroicons/react/24/solid"
+import { useSession } from "next-auth/react"
 import Link from "next/link"
 import React, { useContext } from "react"
 import { AdminContext } from "../pages/_app"
 
 const NavBar = () => {
+  const { data: authed } = useSession()
   const { adminMode, setAdminMode } = useContext(AdminContext)
 
   return (
@@ -26,19 +28,22 @@ const NavBar = () => {
       <div className="navbar-center">
         <a className="btn-ghost btn text-xl normal-case">fluidly</a>
       </div>
-      <div className="navbar-end">
-        <div className="form-control grow-0">
-          <label className="label cursor-pointer">
-            <span className="label-text mr-4">Admin?</span>
-            <input
-              type="checkbox"
-              className="toggle-primary toggle toggle-sm"
-              checked={adminMode}
-              onChange={() => setAdminMode(!adminMode)}
-            />
-          </label>
+
+      {authed && (
+        <div className="navbar-end">
+          <div className="form-control grow-0">
+            <label className="label cursor-pointer">
+              <span className="label-text mr-4">Admin?</span>
+              <input
+                type="checkbox"
+                className="toggle-primary toggle toggle-sm"
+                checked={adminMode}
+                onChange={() => setAdminMode(!adminMode)}
+              />
+            </label>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
