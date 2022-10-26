@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { AdminContext } from "../pages/_app"
 import { CorrectionWithRelations } from "../utils/types"
 import Audio from "./Audio"
 import DiffBlock from "./DiffBlock"
@@ -12,6 +13,7 @@ type CorrectionProps = {
 const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
   const { id, audio, diff } = correction
   const [addingDiff, setAddingDiff] = useState(false)
+  const { adminMode } = useContext(AdminContext)
 
   return (
     <div>
@@ -24,7 +26,7 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
         )}
       </div>
 
-      {!addingDiff && (
+      {!addingDiff && adminMode && (
         <button
           type="button"
           onClick={() => setAddingDiff(true)}

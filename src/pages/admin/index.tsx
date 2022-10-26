@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/24/solid"
 import { Prompt, User } from "@prisma/client"
 import type { InferGetServerSidePropsType, NextPage } from "next"
 import Head from "next/head"
@@ -6,8 +7,6 @@ import { useState } from "react"
 import { prisma } from "../../server/db/client"
 import { trpc } from "../../utils/trpc"
 import { ResponseWithRelations } from "../../utils/types"
-
-import { XMarkIcon } from "@heroicons/react/24/solid"
 
 const Cell = ({ children }: { children: React.ReactNode }) => {
   return <td className="w-96">{children}</td>
@@ -51,7 +50,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                 <Cell>
                   <div className="my-1 mr-4 flex flex-row">
                     <button
-                      className="btn-outline btn-error btn-square btn-xs btn mr-2"
+                      className="btn-outline btn-error btn-xs btn-square btn mr-2"
                       onClick={() => {
                         if (window.confirm("Sure you want to delete this?")) {
                           deleteResponse.mutate({ id: resp.id })
@@ -110,37 +109,41 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
 
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
-      <label>User:</label>
-      <select
-        value={selectedUser?.id ?? ""}
-        className="select-primary select select-sm"
-        onChange={(e) => {
-          const user = users.find(({ id }) => id === e.target.value)
-          setSelectedUser(user)
-        }}
-      >
-        {users.map(({ id, name }) => {
-          return (
-            <option key={id} value={id}>
-              {name ?? "Unnamed User"}
-            </option>
-          )
-        })}
-      </select>
-      <label className="mr-2">Prompt:</label>
-      <select
-        onChange={(e) => setSelectedPrompt(prompts.find(({ id }) => id === e.target.value))}
-        className="select-primary select select-sm"
-        value={selectedPrompt?.id ?? ""}
-      >
-        {prompts.map(({ id, prompt }) => {
-          return (
-            <option key={id} value={id}>
-              {prompt}
-            </option>
-          )
-        })}
-      </select>
+      <span>
+        <label className="mr-2">User:</label>
+        <select
+          value={selectedUser?.id ?? ""}
+          className="select-primary select select-sm"
+          onChange={(e) => {
+            const user = users.find(({ id }) => id === e.target.value)
+            setSelectedUser(user)
+          }}
+        >
+          {users.map(({ id, name }) => {
+            return (
+              <option key={id} value={id}>
+                {name ?? "Unnamed User"}
+              </option>
+            )
+          })}
+        </select>
+      </span>
+      <span>
+        <label className="mr-2">Prompt:</label>
+        <select
+          onChange={(e) => setSelectedPrompt(prompts.find(({ id }) => id === e.target.value))}
+          className="select-primary select select-sm"
+          value={selectedPrompt?.id ?? ""}
+        >
+          {prompts.map(({ id, prompt }) => {
+            return (
+              <option key={id} value={id}>
+                {prompt}
+              </option>
+            )
+          })}
+        </select>
+      </span>
       <button
         className="btn-primary btn-sm btn"
         disabled={!selectedUser?.id || !selectedPrompt?.id}
@@ -172,18 +175,22 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
 
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
-      <label className="mr-2">Name:</label>
-      <input
-        onChange={(e) => setName(e.target.value)}
-        className="input-primary input input-sm"
-        value={name}
-      />
-      <label>Email:</label>
-      <input
-        onChange={(e) => setEmail(e.target.value)}
-        className="input-primary input input-sm"
-        value={email}
-      />
+      <span>
+        <label className="mr-2">Name:</label>
+        <input
+          onChange={(e) => setName(e.target.value)}
+          className="input-primary input input-sm"
+          value={name}
+        />
+      </span>
+      <span>
+        <label className="mr-2">Email:</label>
+        <input
+          onChange={(e) => setEmail(e.target.value)}
+          className="input-primary input input-sm"
+          value={email}
+        />
+      </span>
       <button
         className="btn-primary btn-sm btn"
         onClick={() => {
@@ -218,21 +225,25 @@ const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) =
 
   return (
     <div className="flex flex-row flex-wrap items-center gap-2 rounded p-2">
-      <label>Prompt:</label>
-      <input
-        onChange={(e) => setPrompt(e.target.value)}
-        className="input-primary input input-sm"
-        value={prompt}
-      />
-      <label>Language:</label>
-      <select
-        onChange={(e) => setLang(e.target.value)}
-        className="select-primary select select-sm"
-        value={lang}
-      >
-        <option value="es">Spanish</option>
-        <option value="fr">French</option>
-      </select>
+      <span>
+        <label className="mr-2">Prompt:</label>
+        <input
+          onChange={(e) => setPrompt(e.target.value)}
+          className="input-primary input input-sm"
+          value={prompt}
+        />
+      </span>
+      <span>
+        <label className="mr-2">Language:</label>
+        <select
+          onChange={(e) => setLang(e.target.value)}
+          className="select-primary select select-sm"
+          value={lang}
+        >
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+        </select>
+      </span>
       <button
         className="btn-primary btn-sm btn"
         onClick={() => {

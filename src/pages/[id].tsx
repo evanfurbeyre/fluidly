@@ -1,13 +1,13 @@
 import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
-import { useSession } from "next-auth/react"
 import Head from "next/head"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Audio from "../components/Audio"
 import AudioInput from "../components/AudioInput"
 import Correction from "../components/Correction"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
+import { AdminContext } from "./_app"
 
 type Props = {
   id: string
@@ -19,9 +19,8 @@ const Response: NextPage<Props> = ({ id }) => {
   const responseAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
   const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
   const addCorrection = trpc.correction.create.useMutation()
-  const { data: session } = useSession()
-  const [adminMode, setAdminMode] = useState(false)
   const [addingCorrection, setAddingCorrection] = useState(false)
+  const { adminMode } = useContext(AdminContext)
 
   if (getResponseQry.isLoading || responseAudioUploadQry.isLoading) {
     return <></>
@@ -85,20 +84,7 @@ const Response: NextPage<Props> = ({ id }) => {
       </Head>
 
       {!hasCorrections && !adminMode && (
-        <div className="flex min-h-screen flex-col items-center justify-center">
-          {session && (
-            <div className="form-control grow-0">
-              <label className="label cursor-pointer">
-                <span className="label-text mr-4">Admin?</span>
-                <input
-                  type="checkbox"
-                  className="toggle-primary toggle toggle-sm"
-                  checked={adminMode}
-                  onChange={() => setAdminMode(!adminMode)}
-                />
-              </label>
-            </div>
-          )}
+        <div className="flex h-[calc(100vh-75px)] flex-col items-center justify-center">
           <div className="flex grow items-center text-center">
             <div className="flex max-w-md flex-col gap-12">
               <h1 className="text-2xl">{response.prompt.prompt}</h1>
@@ -111,7 +97,7 @@ const Response: NextPage<Props> = ({ id }) => {
             </div>
           </div>
           {!hasAudio && (
-            <div className="w-screen grow-0">
+            <div className="fixed bottom-0 w-screen bg-white">
               <AudioInput onSubmit={submitResponseAudio} />
             </div>
           )}
@@ -120,37 +106,26 @@ const Response: NextPage<Props> = ({ id }) => {
       {(adminMode || hasCorrections) && (
         <div className="container mx-auto flex items-center justify-center p-6">
           <div className="flex w-full flex-col gap-4 sm:w-96">
-            {session && (
-              <div className="form-control grow-0">
-                <label className="label cursor-pointer">
-                  <span className="label-text mr-4">Admin?</span>
-                  <input
-                    type="checkbox"
-                    className="toggle-primary toggle toggle-sm"
-                    checked={adminMode}
-                    onChange={() => setAdminMode(!adminMode)}
-                  />
-                </label>
-              </div>
-            )}
             <h1 className="w-full text-2xl">{response.prompt.prompt}</h1>
             {hasAudio && <Audio src={response.audio?.audioUrl as string} />}
             <div className="mt-5 flex w-full flex-row items-center justify-between">
               <h2 className="text-lg">Corrections</h2>
-              <button
-                type="button"
-                onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn"
-              >
-                Add Correction
-              </button>
+              {adminMode && (
+                <button
+                  type="button"
+                  onClick={() => setAddingCorrection(true)}
+                  className="btn-outline btn-primary btn-sm btn"
+                >
+                  Add Correction
+                </button>
+              )}
             </div>
             {response.corrections.map((cor) => (
               <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
             ))}
           </div>
           {addingCorrection && (
-            <div className="absolute left-0 bottom-0 w-screen">
+            <div className="fixed bottom-0 w-screen bg-white">
               <AudioInput onSubmit={submitCorrection} onCancel={() => setAddingCorrection(false)} />
             </div>
           )}
