@@ -13,27 +13,31 @@ const DiffBlock = (props: Props) => {
         switch (type) {
           case "addition":
             return (
-              <span
-                key={index}
-                className="rounded border-2 border-green-500 bg-green-100 px-1 font-medium text-green-700 first:pl-0 last:pr-0"
-              >
-                {content}
-              </span>
+              <>
+                <span key={index} className="rounded bg-green-200 font-medium text-green-800">
+                  {content}
+                </span>
+                <span> </span>
+              </>
             )
           case "deletion":
             return (
-              <span
-                key={index}
-                className="rounded border-2 border-red-500 bg-red-100 px-1 font-medium text-red-700 first:pl-0 last:pr-0"
-              >
-                {content}
-              </span>
+              <>
+                <span
+                  key={index}
+                  className="rounded bg-red-200 font-medium text-red-800 line-through"
+                >
+                  {content}
+                </span>
+                <span> </span>
+              </>
             )
           default:
             return (
-              <span key={index} className="px-1 first:pl-0 last:pr-0">
-                {content}
-              </span>
+              <>
+                <span key={index}>{content}</span>
+                <span> </span>
+              </>
             )
         }
       })}

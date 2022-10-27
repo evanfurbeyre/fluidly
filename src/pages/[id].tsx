@@ -69,7 +69,10 @@ const Response: NextPage<Props> = ({ id }) => {
       responseId: response.id,
       language: response.prompt.language,
     })
-    setTimeout(refetchResponse, 1000) // hack... refetching right away doesn't return with response audio
+    setTimeout(() => {
+      refetchResponse()
+      setAddingCorrection(false)
+    }, 1000) // hack... refetching right away doesn't return with response audio
   }
 
   const hasAudio = typeof response.audio?.audioUrl === "string"

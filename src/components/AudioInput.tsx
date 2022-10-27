@@ -54,6 +54,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   const handleSubmit = async () => {
     setLoading(true)
     await onSubmit(blob)
+    chunks = []
     setLoading(false)
     setSuccess(true)
   }
