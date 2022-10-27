@@ -9,7 +9,7 @@ const Audio = (props: Props) => {
   return (
     <div className="flex">
       <audio className="w-full rounded-2xl" controls>
-        <source src={src} type="audio/wav" />
+        <source src={src} type="audio/mp4" />
       </audio>
       {/* {session && withOptions && (
         <div className="flex w-12 grow-0 items-center justify-center">
