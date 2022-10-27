@@ -4,7 +4,6 @@ import Audio from "./Audio"
 
 const getRecorder = async () => {
   if (typeof window === "undefined") return null
-  alert("Get User Media Not Supported")
 
   if (!window.navigator.mediaDevices || !window.navigator.mediaDevices.getUserMedia) {
     alert("Get User Media Not Supported")
