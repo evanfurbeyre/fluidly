@@ -50,7 +50,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                 <Cell>
                   <div className="my-1 mr-4 flex flex-row">
                     <button
-                      className="btn-outline btn-error btn-xs btn-square btn mr-2"
+                      className="btn-outline btn-error btn-square btn-xs btn mr-2"
                       onClick={() => {
                         if (window.confirm("Sure you want to delete this?")) {
                           deleteResponse.mutate({ id: resp.id })
@@ -60,11 +60,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                       <XMarkIcon className="h-6 w-6" />
                     </button>
                     <Link href={`/${resp.id}`}>
-                      <a className="underline">Submission</a>
-                    </Link>
-                    <span className="mx-3">|</span>
-                    <Link href={`/admin/${resp.id}`}>
-                      <a className="underline">Correction</a>
+                      <a className="underline">{resp.id}</a>
                     </Link>
                   </div>
                 </Cell>
@@ -145,7 +141,7 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
         </select>
       </span>
       <button
-        className="btn-primary btn-sm btn"
+        className={`btn-primary btn-sm btn ${createResponse.isLoading && "loading"}`}
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
@@ -192,7 +188,7 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
         />
       </span>
       <button
-        className="btn-primary btn-sm btn"
+        className={`btn-primary btn-sm btn ${createUser.isLoading && "loading"}`}
         onClick={() => {
           if (!email.trim() || !name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -245,7 +241,7 @@ const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) =
         </select>
       </span>
       <button
-        className="btn-primary btn-sm btn"
+        className={`btn-primary btn-sm btn ${createPrompt.isLoading && "loading"}`}
         onClick={() => {
           if (!lang.trim() || !prompt.trim()) {
             setStatusMessage({ color: "red", message: "prompt and language required" })

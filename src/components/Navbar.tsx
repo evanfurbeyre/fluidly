@@ -9,15 +9,18 @@ const NavBar = () => {
 
   return (
     <div className="navbar sticky top-0 border-b-2 bg-base-100">
-      <div className=" navbar-start ml-2">
-        <Link href={"/admin"}>Admin Page</Link>
+      <div className="navbar-start">
+        {authed && (
+          <div className="pl-2">
+            <Link href={"/admin"}>Admin Page</Link>
+          </div>
+        )}
       </div>
       <div className="navbar-center">
-        <a className="btn-ghost btn text-xl normal-case">fluidly</a>
+        <a className="text-xl font-semibold normal-case">fluidly</a>
       </div>
-
-      {authed && (
-        <div className="navbar-end">
+      <div className="navbar-end">
+        {authed && (
           <div className="form-control grow-0">
             <label className="label cursor-pointer">
               <span className="label-text mr-4">Admin?</span>
@@ -29,8 +32,8 @@ const NavBar = () => {
               />
             </label>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
