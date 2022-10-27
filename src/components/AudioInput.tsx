@@ -4,6 +4,11 @@ import Audio from "./Audio"
 
 const getRecorder = async () => {
   if (typeof window === "undefined") return null
+  alert("Get User Media Not Supported")
+
+  if (!window.navigator.mediaDevices || !window.navigator.mediaDevices.getUserMedia) {
+    alert("Get User Media Not Supported")
+  }
   const stream = await window.navigator.mediaDevices.getUserMedia({ audio: true })
   return new MediaRecorder(stream)
 }
@@ -91,7 +96,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="btn-outline btn btn-error w-28"
+              className="btn-outline btn-error btn w-28"
               onClick={handleReset}
             >
               Discard
@@ -99,7 +104,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className={`btn btn-primary w-28 ${loading && "loading"}`}
+              className={`btn-primary btn w-28 ${loading && "loading"}`}
               onClick={handleSubmit}
             >
               {success ? <CheckIcon className="h-6 w-6" /> : loading ? "" : "Submit"}
@@ -109,7 +114,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
       )}
       {onCancel && (
         <div className="absolute top-1 right-1">
-          <button className="btn btn-ghost btn-square btn-xs" onClick={onCancel}>
+          <button className="btn-ghost btn-square btn-xs btn" onClick={onCancel}>
             <XMarkIcon />
           </button>
         </div>
