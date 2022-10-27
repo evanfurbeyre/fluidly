@@ -33,45 +33,48 @@ const Admin: NextPage<AdminPageProps> = (props) => {
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="p-5">
-        <table className="">
-          <thead>
-            <tr>
-              <Cell>Response</Cell>
-              <Cell>User</Cell>
-              <Cell>Audio</Cell>
-              <Cell>Corrections</Cell>
-              <Cell>Prompt</Cell>
-            </tr>
-          </thead>
-          <tbody>
-            {responses.map((resp) => (
-              <tr key={JSON.stringify(resp)}>
-                <Cell>
-                  <div className="my-1 mr-4 flex flex-row">
-                    <button
-                      className="btn-outline btn-error btn-square btn-xs btn mr-2"
-                      onClick={() => {
-                        if (window.confirm("Sure you want to delete this?")) {
-                          deleteResponse.mutate({ id: resp.id })
-                        }
-                      }}
-                    >
-                      <XMarkIcon className="h-6 w-6" />
-                    </button>
-                    <Link href={`/${resp.id}`}>
-                      <a className="underline">{resp.id}</a>
-                    </Link>
-                  </div>
-                </Cell>
-                <Cell>{resp.user.name}</Cell>
-                <Cell>{(!!resp.audio).toString()}</Cell>
-                <Cell>{(!!resp.corrections?.length).toString()}</Cell>
-                <Cell>{resp.prompt.prompt}</Cell>
+      <div>
+        <div className="overflow-x-auto">
+          <table className="table-compact table">
+            <thead>
+              <tr>
+                <Cell>Response</Cell>
+                <Cell>User</Cell>
+                <Cell>Audio</Cell>
+                <Cell>Corrections</Cell>
+                <Cell>Prompt</Cell>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {responses.map((resp) => (
+                <Link key={JSON.stringify(resp)} href={`/${resp.id}`}>
+                  <tr className="hover cursor-pointer">
+                    <Cell>
+                      <div className="flex flex-row items-center">
+                        <button
+                          className="btn-outline btn-error btn-square btn-xs btn mr-2"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (window.confirm("Sure you want to delete this?")) {
+                              deleteResponse.mutate({ id: resp.id })
+                            }
+                          }}
+                        >
+                          <XMarkIcon className="h-6 w-6" />
+                        </button>
+                        <span>{resp.id}</span>
+                      </div>
+                    </Cell>
+                    <Cell>{resp.user.name}</Cell>
+                    <Cell>{(!!resp.audio).toString()}</Cell>
+                    <Cell>{(!!resp.corrections?.length).toString()}</Cell>
+                    <Cell>{resp.prompt.prompt}</Cell>
+                  </tr>
+                </Link>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="mt-5 flex flex-col gap-3">
           <CreateResponseForm
             users={users}
