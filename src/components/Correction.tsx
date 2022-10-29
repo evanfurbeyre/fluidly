@@ -18,7 +18,7 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
   return (
     <div>
       <div className="rounded-2xl bg-stone-200">
-        {audio.audioUrl && <Audio src={audio.audioUrl} withOptions />}
+        {audio?.audioUrl && <Audio src={audio.audioUrl} withOptions />}
         {diff.length > 0 && (
           <div className="py-2 px-4">
             <DiffBlock diff={diff} />
@@ -30,7 +30,7 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
         <button
           type="button"
           onClick={() => setAddingDiff(true)}
-          className="btn-primary btn-sm btn float-right mt-1"
+          className="btn btn-primary btn-sm float-right mt-1"
         >
           Add text
         </button>

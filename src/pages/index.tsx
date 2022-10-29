@@ -51,7 +51,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
             </thead>
             <tbody>
               {responses.map((resp) => (
-                <Link key={JSON.stringify(resp)} href={`/${resp.id}`}>
+                <Link key={JSON.stringify(resp)} href={`/${resp.id}`} passHref>
                   <tr className="hover cursor-pointer">
                     <Cell>
                       <div className="flex flex-row items-center">

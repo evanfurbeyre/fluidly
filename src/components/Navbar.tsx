@@ -12,12 +12,9 @@ const NavBar = () => {
       <div className="navbar-start">
         {session && (
           <div className="pl-2">
-            <Link href={"/admin"}>Admin Page</Link>
+            <Link href={"/"}>Admin Page</Link>
           </div>
         )}
-      </div>
-      <div className="navbar-center">
-        <a className="text-xl font-semibold normal-case">fluidly</a>
       </div>
       <div className="navbar-end mr-6">
         {session && (

@@ -83,8 +83,8 @@ model Correction {
   id         String         @id @default(cuid())
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @updatedAt
-  audio      Audio          @relation(fields: [audioId], references: [id])
-  audioId    String
+  audio      Audio?         @relation(fields: [audioId], references: [id])
+  audioId    String?
   diff       DiffFragment[]
   response   Response       @relation(fields: [responseId], references: [id], onDelete: Cascade)
   responseId String

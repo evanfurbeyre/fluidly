@@ -27,6 +27,27 @@ export const correctionRouter = router({
       })
     }),
 
+  createTextOnlyCorrection: publicProcedure
+    .input(
+      z.object({
+        responseId: z.string(),
+        diff: z.array(
+          z.object({
+            type: z.enum(["original", "addition", "deletion"]),
+            content: z.string(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.correction.create({
+        data: {
+          responseId: input.responseId,
+          diff: { createMany: { data: input.diff } },
+        },
+      })
+    }),
+
   addDiffFragments: publicProcedure
     .input(
       z.object({

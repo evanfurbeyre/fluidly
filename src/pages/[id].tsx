@@ -1,3 +1,4 @@
+import { MicrophoneIcon, PencilSquareIcon } from "@heroicons/react/24/solid"
 import axios from "axios"
 import type { GetStaticProps, NextPage } from "next"
 import Head from "next/head"
@@ -5,6 +6,7 @@ import { useContext, useState } from "react"
 import Audio from "../components/Audio"
 import AudioInput from "../components/AudioInput"
 import Correction from "../components/Correction"
+import DiffInput from "../components/DiffInput"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 import { AdminContext } from "./_app"
@@ -20,6 +22,7 @@ const Response: NextPage<Props> = ({ id }) => {
   const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
   const addCorrection = trpc.correction.create.useMutation()
   const [addingCorrection, setAddingCorrection] = useState(false)
+  const [addingTextCorrection, setAddingTextCorrection] = useState(false)
   const { adminMode } = useContext(AdminContext)
 
   if (getResponseQry.isLoading || responseAudioUploadQry.isLoading) {
@@ -75,6 +78,18 @@ const Response: NextPage<Props> = ({ id }) => {
     }, 1000) // hack... refetching right away doesn't return with response audio
   }
 
+  const submitTextCorrection = async () => {
+    // addCorrection.mutate({
+    //   key: corKey,
+    //   responseId: response.id,
+    //   language: response.prompt.language,
+    // })
+    setTimeout(() => {
+      refetchResponse()
+      setAddingTextCorrection(false)
+    }, 1000) // hack... refetching right away doesn't return with response audio
+  }
+
   const hasAudio = typeof response.audio?.audioUrl === "string"
   const hasCorrections = Boolean(response.corrections.length)
 
@@ -114,13 +129,22 @@ const Response: NextPage<Props> = ({ id }) => {
             <div className="mt-5 flex w-full flex-row items-center justify-between">
               <h2 className="text-lg">Corrections</h2>
               {adminMode && (
-                <button
-                  type="button"
-                  onClick={() => setAddingCorrection(true)}
-                  className="btn-outline btn-primary btn-sm btn"
-                >
-                  Add Correction
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setAddingCorrection(true)}
+                    className="btn-outline btn btn-primary btn-sm mr-4"
+                  >
+                    <MicrophoneIcon className="h-6 w-6" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAddingTextCorrection(true)}
+                    className="btn-outline btn btn-primary btn-sm"
+                  >
+                    <PencilSquareIcon className="h-6 w-6" />
+                  </button>
+                </div>
               )}
             </div>
             {response.corrections.map((cor) => (
@@ -130,6 +154,11 @@ const Response: NextPage<Props> = ({ id }) => {
           {addingCorrection && (
             <div className="fixed bottom-0 w-screen bg-white">
               <AudioInput onSubmit={submitCorrection} onCancel={() => setAddingCorrection(false)} />
+            </div>
+          )}
+          {addingTextCorrection && (
+            <div className="fixed bottom-0 w-screen bg-white">
+              <DiffInput responseId={id} onSubmit={submitTextCorrection} />
             </div>
           )}
         </div>

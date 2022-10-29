@@ -67,33 +67,35 @@ export const responseRouter = router({
       if (!res) return null
       if (!res?.audio || !res.audio?.key) return res
 
-      // TODO: is there a better way to attach presigned urls?
-
+      const promises = []
       // Attach pre-signed url of audio
       const responseCommand = new GetObjectCommand({
         Bucket: env.AWS_AUDIO_INPUT_BUCKET,
         Key: res.audio.key,
       })
+      const responsePromise = getSignedUrl(client, responseCommand, { expiresIn: 3600 }).then(
+        (url) => {
+          if (res.audio) res.audio.audioUrl = url
+        },
+      )
+      promises.push(responsePromise)
 
-      const correctionCommands = res.corrections.map(() => {
-        return new GetObjectCommand({
-          Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-          Key: res.corrections[0]?.audio.key,
-        })
+      res.corrections.forEach((cor) => {
+        if (cor.audio) {
+          const correctionCommand = new GetObjectCommand({
+            Bucket: env.AWS_AUDIO_INPUT_BUCKET,
+            Key: cor.audio.key,
+          })
+          const correctionPromise = getSignedUrl(client, correctionCommand, {
+            expiresIn: 3600,
+          }).then((url) => {
+            if (cor.audio) cor.audio.audioUrl = url
+          })
+          promises.push(correctionPromise)
+        }
       })
 
-      const urls = await Promise.all([
-        getSignedUrl(client, responseCommand, { expiresIn: 3600 }),
-        ...correctionCommands.map((c) => getSignedUrl(client, c, { expiresIn: 3600 })),
-      ])
-
-      res.audio.audioUrl = urls[0]
-
-      res.corrections.forEach((c, i) => {
-        const audioUrl = urls[i + 1] // first audioUrl in array belongs to the response
-        if (audioUrl) c.audio.audioUrl = audioUrl
-      })
-
+      await Promise.all(promises)
       return res
     }),
 
