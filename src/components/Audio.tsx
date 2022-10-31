@@ -5,13 +5,11 @@ type Props = {
 
 const Audio = (props: Props) => {
   const { src } = props
-  console.log("src:", src)
   return (
     <div className="flex flex-col gap-8">
       <audio className="w-full rounded-2xl" controls>
         <source src={src} type="audio/mp4" />
       </audio>
-      <a href={src}>SRC</a>
       {/* {session && withOptions && (
         <div className="flex w-12 grow-0 items-center justify-center">
           <div className="dropdown-end dropdown">
