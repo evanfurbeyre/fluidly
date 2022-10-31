@@ -54,6 +54,7 @@ export const responseRouter = router({
         include: {
           user: true,
           audio: true,
+          feedback: true,
           corrections: {
             include: {
               audio: true,
@@ -80,6 +81,22 @@ export const responseRouter = router({
       )
       promises.push(responsePromise)
 
+      // Attach pre-signed url of feedback
+
+      if (res.feedback) {
+        const feedbackCommand = new GetObjectCommand({
+          Bucket: env.AWS_AUDIO_INPUT_BUCKET,
+          Key: res.feedback.key,
+        })
+        const feedbackPromise = getSignedUrl(client, feedbackCommand, { expiresIn: 3600 }).then(
+          (url) => {
+            if (res.feedback) res.feedback.audioUrl = url
+          },
+        )
+        promises.push(feedbackPromise)
+      }
+
+      // Attach pre-signed urls of correction audio
       res.corrections.forEach((cor) => {
         if (cor.audio) {
           const correctionCommand = new GetObjectCommand({
@@ -113,7 +130,7 @@ export const responseRouter = router({
           key: input.key,
           bucket: env.AWS_AUDIO_INPUT_BUCKET,
           language: input.language,
-          responses: {
+          response: {
             connect: {
               id: input.responseId,
             },
@@ -135,4 +152,43 @@ export const responseRouter = router({
       url,
     }
   }),
+
+  addResponseFeedback: publicProcedure
+    .input(
+      z.object({
+        responseId: z.string(),
+        key: z.string(),
+        language: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.response.update({
+        where: { id: input.responseId },
+        data: {
+          feedback: {
+            create: {
+              key: input.key,
+              bucket: env.AWS_AUDIO_INPUT_BUCKET,
+              language: input.language,
+            },
+          },
+        },
+      })
+    }),
+
+  addResponseFeedbackText: publicProcedure
+    .input(
+      z.object({
+        responseId: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.response.update({
+        where: { id: input.responseId },
+        data: {
+          feedbackText: input.text,
+        },
+      })
+    }),
 })

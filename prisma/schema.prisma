@@ -67,16 +67,19 @@ model VerificationToken {
 // End "Necessary for next auth"
 
 model Response {
-  id          String       @id @default(cuid())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  prompt      Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)
-  promptId    String
-  audio       Audio?       @relation(fields: [audioId], references: [id])
-  audioId     String?
-  corrections Correction[]
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  prompt       Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  promptId     String
+  audio        Audio?       @relation("audio", fields: [audioId], references: [id], onDelete: SetNull)
+  audioId      String?      @unique
+  corrections  Correction[]
+  feedback     Audio?       @relation("feedback", fields: [feedbackId], references: [id], onDelete: SetNull)
+  feedbackId   String?      @unique
+  feedbackText String?
 }
 
 model Correction {
@@ -107,7 +110,8 @@ model Audio {
   key         String
   audioUrl    String?
   language    String
-  responses   Response[]
+  response    Response?    @relation("audio")
+  feedback    Response?    @relation("feedback")
   corrections Correction[]
 }
 
