@@ -82,7 +82,6 @@ export const responseRouter = router({
       promises.push(responsePromise)
 
       // Attach pre-signed url of feedback
-
       if (res.feedback) {
         const feedbackCommand = new GetObjectCommand({
           Bucket: env.AWS_AUDIO_INPUT_BUCKET,
@@ -141,7 +140,7 @@ export const responseRouter = router({
     }),
 
   getAudioUploadUrl: publicProcedure.query(async () => {
-    const key = `${v4()}.ogg`
+    const key = `${v4()}.mp4`
     const command = new PutObjectCommand({
       Bucket: env.AWS_AUDIO_INPUT_BUCKET,
       Key: key,
