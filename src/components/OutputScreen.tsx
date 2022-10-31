@@ -1,107 +1,162 @@
 import { MicrophoneIcon, PencilSquareIcon } from "@heroicons/react/24/solid"
-import { Audio as AudioType, Correction as CorrectionType, DiffFragment } from "@prisma/client"
-import { useState } from "react"
+import axios from "axios"
+import { useContext, useState } from "react"
+import { AdminContext } from "../pages/_app"
+import { trpc } from "../utils/trpc"
+import { ResponseWithRelations } from "../utils/types"
 import Audio from "./Audio"
 import AudioInput from "./AudioInput"
 import Correction from "./Correction"
 import DiffInput from "./DiffInput"
 
 type Props = {
-  admin: boolean
-  prompt: string
-  audioUrl: string | null | undefined
-  feedbackAudioUrl: string | null | undefined
-  corrections: Array<CorrectionType & { audio: AudioType | null; diff: DiffFragment[] }>
+  response: ResponseWithRelations
   refetchResponse: () => void
-  feedbackText: string | null | undefined
-  responseId: string
-  submitResponseAudio: (b: Blob) => Promise<void>
-  submitCorrection: (b: Blob) => Promise<void>
-  submitTextCorrection: () => Promise<void>
-  submitFeedback: (b: Blob) => Promise<void>
-  submitTextFeedback: (t: string) => Promise<void>
 }
 
 const OutputScreen = (props: Props) => {
-  const {
-    admin,
-    prompt,
-    audioUrl,
-    feedbackAudioUrl,
-    corrections,
-    refetchResponse,
-    responseId,
-    submitResponseAudio,
-    submitCorrection,
-    submitTextCorrection,
-    submitFeedback,
-    submitTextFeedback,
-  } = props
-  const [addingCorrection, setAddingCorrection] = useState(false)
-  const [addingTextCorrection, setAddingTextCorrection] = useState(false)
+  const { response, refetchResponse } = props
   const [addingFeedback, setAddingFeedback] = useState(false)
+  const [addingCorrection, setAddingCorrection] = useState(false)
   const [addingTextFeedback, setAddingTextFeedback] = useState(false)
-  const [feedbackText, setFeedbackText] = useState(props.feedbackText || "")
+  const [addingTextCorrection, setAddingTextCorrection] = useState(false)
+  const [feedbackText, setFeedbackText] = useState(response.feedbackText || "")
+  const { adminMode } = useContext(AdminContext)
+
+  const addCorrection = trpc.correction.create.useMutation()
+  const feedbackAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
+  const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
+  const addResponseFeedback = trpc.response.addResponseFeedback.useMutation()
+  const addResponseFeedbackText = trpc.response.addResponseFeedbackText.useMutation()
+
+  if (feedbackAudioUploadQry.isLoading || correctionAudioUploadQry.isLoading) {
+    return <></>
+  }
+
+  const { url: corUrl, key: corKey } = correctionAudioUploadQry.data ?? {}
+  const { url: feedUrl, key: feedKey } = feedbackAudioUploadQry.data ?? {}
+
+  if (!corKey || !corUrl || !feedKey || !feedUrl) {
+    throw new Error("bad upload url")
+  }
+
+  const submitCorrection = async (blob: Blob) => {
+    await axios({
+      method: "PUT",
+      url: corUrl,
+      data: blob,
+    }).catch((e) => {
+      console.log("Error uploading:", e)
+      throw e
+    })
+    addCorrection.mutate(
+      {
+        key: corKey,
+        responseId: response.id,
+        language: response.prompt.language,
+      },
+      {
+        onSettled: () => refetchResponse(),
+      },
+    )
+  }
+
+  const submitFeedback = async (blob: Blob) => {
+    await axios({
+      method: "PUT",
+      url: feedUrl,
+      data: blob,
+    }).catch((e) => {
+      console.log("Error uploading:", e)
+      throw e
+    })
+    addResponseFeedback.mutate(
+      {
+        key: feedKey,
+        responseId: response.id,
+        language: response.prompt.language,
+      },
+      {
+        onSettled: () => refetchResponse(),
+      },
+    )
+  }
+
+  const submitTextFeedback = async (text: string) => {
+    addResponseFeedbackText.mutate(
+      {
+        responseId: response.id,
+        text,
+      },
+      {
+        onSettled: () => refetchResponse,
+      },
+    )
+  }
+
+  const submitTextCorrection = async () => {
+    // actual mutation happens in DiffInput
+    setTimeout(() => {
+      refetchResponse()
+    }, 1000) // hack... refetching right away doesn't return with response audio
+  }
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center p-6">
       <div className="flex w-full flex-col gap-4 sm:w-96">
-        <h1 className="w-full text-2xl">{prompt}</h1>
-        {audioUrl && <Audio src={audioUrl} />}
+        <h1 className="w-full text-2xl">{response.prompt.prompt}</h1>
+        {response.audio?.audioUrl && <Audio src={response.audio.audioUrl} />}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
-          {(admin || corrections.length) && <h2 className="text-lg">Corrections</h2>}
-          {admin && (
+          {(adminMode || response.corrections.length) && <h2 className="text-lg">Corrections</h2>}
+          {adminMode && (
             <div>
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn btn-primary btn-sm mr-4"
+                className="btn-outline btn-primary btn-sm btn mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextCorrection(true)}
-                className="btn-outline btn btn-primary btn-sm"
+                className="btn-outline btn-primary btn-sm btn"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
             </div>
           )}
         </div>
-        {corrections.map((cor) => (
+        {response.corrections.map((cor) => (
           <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
         ))}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
-          {(admin || feedbackAudioUrl || feedbackText) && <h2 className="text-lg">Feedback</h2>}
-          {admin && (
+          {(adminMode || response.feedback?.audioUrl || feedbackText) && (
+            <h2 className="text-lg">Feedback</h2>
+          )}
+          {adminMode && (
             <div>
               <button
                 type="button"
                 onClick={() => setAddingFeedback(true)}
-                className="btn-outline btn btn-primary btn-sm mr-4"
+                className="btn-outline btn-primary btn-sm btn mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextFeedback(true)}
-                className="btn-outline btn btn-primary btn-sm"
+                className="btn-outline btn-primary btn-sm btn"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
             </div>
           )}
         </div>
-        {feedbackAudioUrl && <Audio src={feedbackAudioUrl as string} />}
+        {response.feedback?.audioUrl && <Audio src={response.feedback.audioUrl} />}
         {!addingTextFeedback && <div>{feedbackText}</div>}
       </div>
 
-      {!audioUrl && (
-        <div className="fixed bottom-0 w-screen bg-white">
-          <AudioInput onSubmit={submitResponseAudio} />
-        </div>
-      )}
       {addingCorrection && (
         <div className="fixed bottom-0 w-screen bg-white">
           <AudioInput onSubmit={submitCorrection} onCancel={() => setAddingCorrection(false)} />
@@ -109,7 +164,7 @@ const OutputScreen = (props: Props) => {
       )}
       {addingTextCorrection && (
         <div className="fixed bottom-0 w-screen bg-white">
-          <DiffInput responseId={responseId} onSubmit={submitTextCorrection} />
+          <DiffInput responseId={response.id} onSubmit={submitTextCorrection} />
         </div>
       )}
       {addingFeedback && (
@@ -127,7 +182,7 @@ const OutputScreen = (props: Props) => {
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              className="btn-outline btn btn-error btn-sm"
+              className="btn-outline btn-error btn-sm btn"
               onClick={() => {
                 setAddingTextFeedback(false)
                 setFeedbackText("")
@@ -137,7 +192,7 @@ const OutputScreen = (props: Props) => {
             </button>
             <button
               type="button"
-              className="btn btn-primary btn-sm"
+              className="btn-primary btn-sm btn"
               onClick={() => {
                 submitTextFeedback(feedbackText)
                 setAddingTextFeedback(false)

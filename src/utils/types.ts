@@ -5,7 +5,13 @@ const responseWithRelations = Prisma.validator<Prisma.ResponseArgs>()({
     user: true,
     audio: true,
     prompt: true,
-    corrections: true,
+    feedback: true,
+    corrections: {
+      include: {
+        diff: true,
+        audio: true,
+      },
+    },
   },
 })
 
