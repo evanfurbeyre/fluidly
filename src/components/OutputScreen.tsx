@@ -24,6 +24,7 @@ type Props = {
 
 const OutputScreen = (props: Props) => {
   const {
+    admin,
     prompt,
     audioUrl,
     feedbackAudioUrl,
@@ -48,45 +49,49 @@ const OutputScreen = (props: Props) => {
         <h1 className="w-full text-2xl">{prompt}</h1>
         {audioUrl && <Audio src={audioUrl} />}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
-          <h2 className="text-lg">Corrections</h2>
-          <div>
-            <button
-              type="button"
-              onClick={() => setAddingCorrection(true)}
-              className="btn-outline btn btn-primary btn-sm mr-4"
-            >
-              <MicrophoneIcon className="h-6 w-6" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setAddingTextCorrection(true)}
-              className="btn-outline btn btn-primary btn-sm"
-            >
-              <PencilSquareIcon className="h-6 w-6" />
-            </button>
-          </div>
+          {(admin || corrections.length) && <h2 className="text-lg">Corrections</h2>}
+          {admin && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setAddingCorrection(true)}
+                className="btn-outline btn btn-primary btn-sm mr-4"
+              >
+                <MicrophoneIcon className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setAddingTextCorrection(true)}
+                className="btn-outline btn btn-primary btn-sm"
+              >
+                <PencilSquareIcon className="h-6 w-6" />
+              </button>
+            </div>
+          )}
         </div>
         {corrections.map((cor) => (
           <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
         ))}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
-          <h2 className="text-lg">Feedback</h2>
-          <div>
-            <button
-              type="button"
-              onClick={() => setAddingFeedback(true)}
-              className="btn-outline btn btn-primary btn-sm mr-4"
-            >
-              <MicrophoneIcon className="h-6 w-6" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setAddingTextFeedback(true)}
-              className="btn-outline btn btn-primary btn-sm"
-            >
-              <PencilSquareIcon className="h-6 w-6" />
-            </button>
-          </div>
+          {(admin || feedbackAudioUrl || feedbackText) && <h2 className="text-lg">Feedback</h2>}
+          {admin && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setAddingFeedback(true)}
+                className="btn-outline btn btn-primary btn-sm mr-4"
+              >
+                <MicrophoneIcon className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setAddingTextFeedback(true)}
+                className="btn-outline btn btn-primary btn-sm"
+              >
+                <PencilSquareIcon className="h-6 w-6" />
+              </button>
+            </div>
+          )}
         </div>
         {feedbackAudioUrl && <Audio src={feedbackAudioUrl as string} />}
         {!addingTextFeedback && <div>{feedbackText}</div>}
