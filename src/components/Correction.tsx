@@ -37,22 +37,16 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
       )}
 
       {addingDiff && (
-        <>
-          <DiffInput
-            correctionId={id}
-            onSubmit={() => {
-              setAddingDiff(false)
-              refetchResponse()
-            }}
-          />
-          <button
-            className="float-right rounded-lg border-2 px-2 py-1 text-sm"
-            type="button"
-            onClick={() => setAddingDiff(false)}
-          >
-            Cancel
-          </button>
-        </>
+        <DiffInput
+          correctionId={id}
+          onSubmit={() => {
+            setAddingDiff(false)
+            refetchResponse()
+          }}
+          onCancel={() => {
+            setAddingDiff(false)
+          }}
+        />
       )}
     </div>
   )

@@ -92,14 +92,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
-                onClick={() => setAddingTextCorrection((value) => !value)}
-                className="btn-outline btn-primary btn-sm btn"
+                onClick={() => setAddingTextCorrection(true)}
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -118,14 +118,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -143,7 +143,11 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
       )}
       {addingTextCorrection && (
         <div className="fixed bottom-0 w-screen bg-white">
-          <DiffInput responseId={response.id} onSubmit={submitTextCorrection} />
+          <DiffInput
+            responseId={response.id}
+            onSubmit={submitTextCorrection}
+            onCancel={() => setAddingTextCorrection(false)}
+          />
         </div>
       )}
       {addingFeedback && (
@@ -161,7 +165,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              className="btn-outline btn-error btn-sm btn"
+              className="btn-outline btn btn-error btn-sm"
               onClick={() => {
                 setAddingTextFeedback(false)
                 setFeedbackText("")
@@ -171,7 +175,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
             </button>
             <button
               type="button"
-              className="btn-primary btn-sm btn"
+              className="btn btn-primary btn-sm"
               onClick={() => {
                 submitTextFeedback(feedbackText)
                 setAddingTextFeedback(false)

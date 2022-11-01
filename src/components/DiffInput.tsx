@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/24/solid"
 import { DiffFragment, DiffType } from "@prisma/client"
 import { NextPage } from "next"
 import { useState } from "react"
@@ -8,6 +9,7 @@ type Props = {
   correctionId?: string
   responseId?: string
   onSubmit: () => void
+  onCancel?: () => void
 }
 
 type DiffFrag = {
@@ -20,7 +22,7 @@ const defaultDiffFrag: DiffFrag = {
   content: "",
 }
 
-const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit }) => {
+const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit, onCancel }) => {
   const addDiffFragments = trpc.correction.addDiffFragments.useMutation()
   const addTextCorrection = trpc.correction.createTextOnlyCorrection.useMutation()
 
@@ -28,7 +30,7 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit }) => {
   const [result, setResult] = useState<DiffFrag[]>([])
 
   return (
-    <div className="mt-4 flex flex-col rounded-lg border-2 bg-gray-100 p-4">
+    <div className="relative mt-4 flex flex-col rounded-lg border-2 bg-gray-100 p-4">
       <h1>Create Diff</h1>
       <textarea
         value={diffFrag.content}
@@ -86,9 +88,11 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit }) => {
         <DiffBlock diff={result as DiffFragment[]} />
       </div>
       <div className="self-end">
-        <button className="btn-outline btn btn-error btn-sm mr-2" onClick={() => setResult([])}>
-          Start over
-        </button>
+        {Boolean(result.length) && (
+          <button className="btn-outline btn btn-error btn-sm mr-2" onClick={() => setResult([])}>
+            Start over
+          </button>
+        )}
         <button
           onClick={() => {
             if (correctionId) {
@@ -103,6 +107,13 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit }) => {
           Submit
         </button>
       </div>
+      {onCancel && (
+        <div className="absolute top-2 right-2">
+          <button className=" btn btn-ghost btn-square btn-xs" onClick={onCancel}>
+            <XMarkIcon />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
