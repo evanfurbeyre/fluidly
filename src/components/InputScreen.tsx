@@ -1,4 +1,3 @@
-import axios from "axios"
 import { trpc } from "../utils/trpc"
 import { ResponseWithRelations } from "../utils/types"
 import Audio from "./Audio"
@@ -12,30 +11,11 @@ type Props = {
 const InputScreen = (props: Props) => {
   const { response, refetchResponse } = props
   const addResponseAudio = trpc.response.addResponseAudio.useMutation()
-  const responseAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
 
-  if (responseAudioUploadQry.isLoading) {
-    return <></>
-  }
-
-  const { url: resUrl, key: resKey } = responseAudioUploadQry.data ?? {}
-
-  if (!resKey || !resUrl) {
-    throw new Error("bad upload url")
-  }
-
-  const submitResponseAudio = async (blob: Blob) => {
-    await axios({
-      method: "PUT",
-      url: resUrl,
-      data: blob,
-    }).catch((e) => {
-      console.log("Error uploading:", e)
-      throw e
-    })
+  const submitResponseAudio = async (key: string) => {
     addResponseAudio.mutate(
       {
-        key: resKey,
+        key: key,
         responseId: response.id,
         language: response.prompt.language,
       },

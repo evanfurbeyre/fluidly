@@ -1,5 +1,4 @@
 import { MicrophoneIcon, PencilSquareIcon } from "@heroicons/react/24/solid"
-import axios from "axios"
 import { useContext, useState } from "react"
 import { AdminContext } from "../pages/_app"
 import { trpc } from "../utils/trpc"
@@ -14,70 +13,46 @@ type Props = {
   refetchResponse: () => void
 }
 
-const OutputScreen = (props: Props) => {
-  const { response, refetchResponse } = props
+const OutputScreen = ({ response, refetchResponse }: Props) => {
+  const { adminMode } = useContext(AdminContext)
   const [addingFeedback, setAddingFeedback] = useState(false)
   const [addingCorrection, setAddingCorrection] = useState(false)
   const [addingTextFeedback, setAddingTextFeedback] = useState(false)
   const [addingTextCorrection, setAddingTextCorrection] = useState(false)
   const [feedbackText, setFeedbackText] = useState(response.feedbackText || "")
-  const { adminMode } = useContext(AdminContext)
 
   const addCorrection = trpc.correction.create.useMutation()
-  const feedbackAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
-  const correctionAudioUploadQry = trpc.response.getAudioUploadUrl.useQuery()
   const addResponseFeedback = trpc.response.addResponseFeedback.useMutation()
   const addResponseFeedbackText = trpc.response.addResponseFeedbackText.useMutation()
 
-  if (feedbackAudioUploadQry.isLoading || correctionAudioUploadQry.isLoading) {
-    return <></>
-  }
-
-  const { url: corUrl, key: corKey } = correctionAudioUploadQry.data ?? {}
-  const { url: feedUrl, key: feedKey } = feedbackAudioUploadQry.data ?? {}
-
-  if (!corKey || !corUrl || !feedKey || !feedUrl) {
-    throw new Error("bad upload url")
-  }
-
-  const submitCorrection = async (blob: Blob) => {
-    await axios({
-      method: "PUT",
-      url: corUrl,
-      data: blob,
-    }).catch((e) => {
-      console.log("Error uploading:", e)
-      throw e
-    })
+  const submitCorrection = async (key: string) => {
     addCorrection.mutate(
       {
-        key: corKey,
+        key: key,
         responseId: response.id,
         language: response.prompt.language,
       },
       {
-        onSettled: () => refetchResponse(),
+        onSettled: () => {
+          refetchResponse()
+          setAddingCorrection(false)
+        },
       },
     )
   }
 
-  const submitFeedback = async (blob: Blob) => {
-    await axios({
-      method: "PUT",
-      url: feedUrl,
-      data: blob,
-    }).catch((e) => {
-      console.log("Error uploading:", e)
-      throw e
-    })
+  const submitFeedback = async (key: string) => {
     addResponseFeedback.mutate(
       {
-        key: feedKey,
+        key: key,
         responseId: response.id,
         language: response.prompt.language,
       },
       {
-        onSettled: () => refetchResponse(),
+        onSettled: () => {
+          refetchResponse()
+          setAddingFeedback(false)
+        },
       },
     )
   }
@@ -89,7 +64,10 @@ const OutputScreen = (props: Props) => {
         text,
       },
       {
-        onSettled: () => refetchResponse,
+        onSettled: () => {
+          refetchResponse()
+          setAddingTextFeedback(false)
+        },
       },
     )
   }
@@ -98,6 +76,7 @@ const OutputScreen = (props: Props) => {
     // actual mutation happens in DiffInput
     setTimeout(() => {
       refetchResponse()
+      setAddingTextCorrection(false)
     }, 1000) // hack... refetching right away doesn't return with response audio
   }
 
@@ -119,7 +98,7 @@ const OutputScreen = (props: Props) => {
               </button>
               <button
                 type="button"
-                onClick={() => setAddingTextCorrection(true)}
+                onClick={() => setAddingTextCorrection((value) => !value)}
                 className="btn-outline btn-primary btn-sm btn"
               >
                 <PencilSquareIcon className="h-6 w-6" />

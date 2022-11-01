@@ -1,5 +1,7 @@
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid"
+import axios from "axios"
 import { useEffect, useState } from "react"
+import { trpc } from "../utils/trpc"
 import Audio from "./Audio"
 
 const getRecorder = async () => {
@@ -17,11 +19,12 @@ let chunks: Blob[] = []
 let blob: Blob
 
 type Props = {
-  onSubmit: (b: Blob) => Promise<void>
+  onSubmit: (key: string) => Promise<void>
   onCancel?: () => void
 }
 
 const AudioInput = ({ onSubmit, onCancel }: Props) => {
+  const uploadUrlQry = trpc.response.getAudioUploadUrl.useQuery()
   const [audioURL, setAudioURL] = useState<string>()
   const [recording, setRecording] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -53,7 +56,20 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
 
   const handleSubmit = async () => {
     setLoading(true)
-    await onSubmit(blob)
+    const { key, url } = uploadUrlQry.data ?? {}
+
+    if (!url || !key) throw new Error("bad upload url")
+
+    await axios({
+      method: "PUT",
+      url: url,
+      data: blob,
+    }).catch((e) => {
+      console.log("Error uploading:", e)
+      throw e
+    })
+
+    await onSubmit(key)
     chunks = []
     setLoading(false)
     setSuccess(true)
