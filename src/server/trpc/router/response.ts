@@ -1,9 +1,8 @@
 import { z } from "zod"
 import { env } from "../../../env/server.mjs"
 import { responseWithRelations } from "../../../utils/types"
-import { getSignedUrl } from "../../services/s3"
+import { generateSignedUrl, getSignedUrl } from "../../services/s3"
 import { publicProcedure, router } from "../trpc"
-import { generateSignedUrl } from "../../services/s3"
 
 export const responseRouter = router({
   create: publicProcedure
@@ -16,12 +15,7 @@ export const responseRouter = router({
     .mutation(({ input, ctx }) => {
       return ctx.prisma.response.create({
         data: input,
-        include: {
-          user: true,
-          audio: true,
-          prompt: true,
-          corrections: true,
-        },
+        include: responseWithRelations.include,
       })
     }),
 
