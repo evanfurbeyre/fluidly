@@ -1,17 +1,9 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import { v4 } from "uuid"
 import { z } from "zod"
 import { env } from "../../../env/server.mjs"
+import { responseWithRelations } from "../../../utils/types"
+import { getSignedUrl } from "../../services/s3"
 import { publicProcedure, router } from "../trpc"
-
-const client = new S3Client({
-  region: "us-east-2",
-  credentials: {
-    accessKeyId: env.AWS_KEY,
-    secretAccessKey: env.AWS_SECRET,
-  },
-})
+import { generateSignedUrl } from "../../services/s3"
 
 export const responseRouter = router({
   create: publicProcedure
@@ -51,60 +43,32 @@ export const responseRouter = router({
     )
     .query(async ({ input, ctx }) => {
       const res = await ctx.prisma.response.findUnique({
-        include: {
-          user: true,
-          audio: true,
-          feedback: true,
-          corrections: {
-            include: {
-              audio: true,
-              diff: true,
-            },
-          },
-          prompt: true,
-        },
+        include: responseWithRelations.include,
         where: { id: input.id },
       })
       if (!res) return null
       if (!res?.audio || !res.audio?.key) return res
 
       const promises = []
-      // Attach pre-signed url of audio
-      const responseCommand = new GetObjectCommand({
-        Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-        Key: res.audio.key,
+
+      const responsePromise = getSignedUrl(res.audio.key).then((url) => {
+        if (res.audio) res.audio.audioUrl = url
       })
-      const responsePromise = getSignedUrl(client, responseCommand, { expiresIn: 3600 }).then(
-        (url) => {
-          if (res.audio) res.audio.audioUrl = url
-        },
-      )
+
       promises.push(responsePromise)
 
       // Attach pre-signed url of feedback
       if (res.feedback) {
-        const feedbackCommand = new GetObjectCommand({
-          Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-          Key: res.feedback.key,
+        const feedbackPromise = getSignedUrl(res.feedback.key).then((url) => {
+          if (res.feedback) res.feedback.audioUrl = url
         })
-        const feedbackPromise = getSignedUrl(client, feedbackCommand, { expiresIn: 3600 }).then(
-          (url) => {
-            if (res.feedback) res.feedback.audioUrl = url
-          },
-        )
         promises.push(feedbackPromise)
       }
 
       // Attach pre-signed urls of correction audio
       res.corrections.forEach((cor) => {
         if (cor.audio) {
-          const correctionCommand = new GetObjectCommand({
-            Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-            Key: cor.audio.key,
-          })
-          const correctionPromise = getSignedUrl(client, correctionCommand, {
-            expiresIn: 3600,
-          }).then((url) => {
+          const correctionPromise = getSignedUrl(cor.audio.key).then((url) => {
             if (cor.audio) cor.audio.audioUrl = url
           })
           promises.push(correctionPromise)
@@ -112,6 +76,7 @@ export const responseRouter = router({
       })
 
       await Promise.all(promises)
+
       return res
     }),
 
@@ -140,16 +105,7 @@ export const responseRouter = router({
     }),
 
   getAudioUploadUrl: publicProcedure.query(async () => {
-    const key = `${v4()}.mp4`
-    const command = new PutObjectCommand({
-      Bucket: env.AWS_AUDIO_INPUT_BUCKET,
-      Key: key,
-    })
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 })
-    return {
-      key,
-      url,
-    }
+    return generateSignedUrl()
   }),
 
   addResponseFeedback: publicProcedure
