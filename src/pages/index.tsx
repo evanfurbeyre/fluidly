@@ -4,7 +4,7 @@ import type { InferGetServerSidePropsType, NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
 import Head from "next/head"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 import { ResponseWithRelations } from "../utils/types"
@@ -14,8 +14,10 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 }
 
 type AdminPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
+type FilterType = "all" | "needs-submission" | "needs-correction"
 
 const Admin: NextPage<AdminPageProps> = (props) => {
+  const [filter, setFilter] = useState<FilterType>("all")
   const [responses, setResponses] = useState(props.responses)
   const [prompts, setPrompts] = useState(props.prompts)
   const [users, setUsers] = useState(props.users)
@@ -27,6 +29,16 @@ const Admin: NextPage<AdminPageProps> = (props) => {
       if (data) setResponses(responses.filter(({ id }) => id !== data.id))
     },
   })
+
+  useEffect(() => {
+    const filteredResponses =
+      filter === "needs-submission"
+        ? props.responses.filter((resp) => !resp.audioId)
+        : filter === "needs-correction"
+        ? props.responses.filter((resp) => resp.corrections?.length === 0)
+        : props.responses
+    setResponses(filteredResponses)
+  }, [filter, props.responses])
 
   if (!session) {
     return (
@@ -49,6 +61,15 @@ const Admin: NextPage<AdminPageProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
+        <select
+          onChange={(e) => setFilter(e.target.value as FilterType)}
+          className="select-primary select select-sm my-5"
+          value={filter}
+        >
+          <option value="all">All</option>
+          <option value="needs-submission">Waiting for submission</option>
+          <option value="needs-correction">Waiting for corrections</option>
+        </select>
         <div className="overflow-x-auto">
           <table className="table-compact table">
             <thead>
