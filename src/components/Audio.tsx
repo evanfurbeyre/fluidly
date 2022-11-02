@@ -8,7 +8,7 @@ const Audio = (props: Props) => {
   return (
     <div className="flex flex-col gap-8">
       <audio className="w-full rounded-2xl" controls>
-        <source src={src} type="audio/wav" />
+        <source src={src} type="audio/mp3" />
       </audio>
       {/* {session && withOptions && (
         <div className="flex w-12 grow-0 items-center justify-center">

@@ -22,7 +22,7 @@ export const getSignedUrl = (key: string) => {
 }
 
 export const generateSignedUrl = async () => {
-  const key = `${v4()}.wav`
+  const key = `${v4()}.mp3`
   const command = new PutObjectCommand({
     Bucket: env.AWS_AUDIO_INPUT_BUCKET,
     Key: key,
