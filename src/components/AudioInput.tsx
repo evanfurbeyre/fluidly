@@ -36,7 +36,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
     if (!recorder) return null
     recorder.ondataavailable = (e) => chunks.push(e.data)
     recorder.onstop = async () => {
-      blob = new Blob(chunks, { type: "audio/wav" })
+      blob = new Blob(chunks, { type: "audio/mp3" })
       setAudioURL(window.URL.createObjectURL(blob))
       setRecording(false)
     }
