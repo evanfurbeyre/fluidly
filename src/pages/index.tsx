@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { Prompt, User } from "@prisma/client"
 import type { InferGetServerSidePropsType, NextPage } from "next"
-import { useSession } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import Head from "next/head"
 import Link from "next/link"
 import { useState } from "react"
@@ -28,7 +28,18 @@ const Admin: NextPage<AdminPageProps> = (props) => {
     },
   })
 
-  if (!session) return <div></div>
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center pt-12">
+        <div className="w-24 text-center">
+          <span className="">Admin?</span>
+          <button type="button" className="btn-ghost btn" onClick={() => signIn()}>
+            Sign In
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

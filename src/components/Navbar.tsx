@@ -1,11 +1,13 @@
 import Link from "next/link"
 import { useContext } from "react"
 import { AdminContext } from "../pages/_app"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 
 const NavBar = () => {
   const { data: session } = useSession()
   const { adminMode, setAdminMode } = useContext(AdminContext)
+
+  if (!session) return <></>
 
   return (
     <div className="navbar sticky top-0 border-b-2 bg-base-100">
@@ -31,12 +33,8 @@ const NavBar = () => {
           </div>
         )}
       </div>
-      <button
-        type="button"
-        className="btn-outline btn-sm btn mr-4"
-        onClick={session ? () => signOut() : () => signIn()}
-      >
-        {session ? "Sign out" : "Sign in"}
+      <button type="button" className="btn-outline btn-sm btn mr-4" onClick={() => signOut()}>
+        Sign out
       </button>
     </div>
   )
