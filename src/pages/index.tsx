@@ -35,7 +35,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
       filter === "needs-submission"
         ? props.responses.filter((resp) => !resp.audioId)
         : filter === "needs-correction"
-        ? props.responses.filter((resp) => resp.corrections?.length === 0)
+        ? props.responses.filter((resp) => resp.audioId && resp.corrections?.length === 0)
         : props.responses
     setResponses(filteredResponses)
   }, [filter, props.responses])
@@ -45,7 +45,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
       <div className="flex flex-col items-center justify-center pt-12">
         <div className="w-24 text-center">
           <span className="">Admin?</span>
-          <button type="button" className="btn-ghost btn" onClick={() => signIn()}>
+          <button type="button" className="btn btn-ghost" onClick={() => signIn()}>
             Sign In
           </button>
         </div>
@@ -90,7 +90,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                     <Cell>
                       <div className="flex flex-row items-center">
                         <button
-                          className="btn-outline btn-error btn-square btn-xs btn mr-2"
+                          className="btn-outline btn btn-error btn-square btn-xs mr-2"
                           onClick={(e) => {
                             e.preventDefault()
                             if (window.confirm("Sure you want to delete this?")) {
@@ -182,7 +182,7 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
         </select>
       </span>
       <button
-        className={`btn-primary btn-sm btn ${createResponse.isLoading && "loading"}`}
+        className={`btn btn-primary btn-sm ${createResponse.isLoading && "loading"}`}
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
@@ -220,7 +220,7 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
         />
       </span>
       <button
-        className={`btn-primary btn-sm btn ${createUser.isLoading && "loading"}`}
+        className={`btn btn-primary btn-sm ${createUser.isLoading && "loading"}`}
         onClick={() => {
           if (!name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -273,7 +273,7 @@ const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) =
         </select>
       </span>
       <button
-        className={`btn-primary btn-sm btn ${createPrompt.isLoading && "loading"}`}
+        className={`btn btn-primary btn-sm ${createPrompt.isLoading && "loading"}`}
         onClick={() => {
           if (!lang.trim() || !prompt.trim()) {
             setStatusMessage({ color: "red", message: "prompt and language required" })
