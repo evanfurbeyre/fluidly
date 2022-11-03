@@ -10,7 +10,7 @@ const NavBar = () => {
   if (!session) return <></>
 
   return (
-    <div className="navbar sticky top-0 border-b-2 bg-base-100">
+    <div className="navbar sticky top-0 z-50 border-b-2 bg-base-100">
       <div className="navbar-start">
         {session && (
           <div className="pl-2">
