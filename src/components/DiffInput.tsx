@@ -40,42 +40,42 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit, onCanc
       ></textarea>
       <div className="my-2 flex w-full items-center justify-between">
         <div className="btn-group">
-          <div
-            // type="radio"
-            // id="original"
-            // name="diffType"
-            // value="original"
+          <input
+            type="radio"
+            id="original"
+            name="diffType"
+            value="original"
             className="btn btn-xs"
-            // data-title="original"
-            // checked={diffFrag.type === "original"}
-            // onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
+            data-title="original"
+            checked={diffFrag.type === "original"}
+            onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           >
             Original
-          </div>
-          <div
-            // type="radio"
-            // id="addition"
-            // name="diffType"
-            // value="addition"
+          </input>
+          <input
+            type="radio"
+            id="addition"
+            name="diffType"
+            value="addition"
             className="btn btn-xs"
-            // data-title="addition"
-            // checked={diffFrag.type === "addition"}
-            // onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
+            data-title="addition"
+            checked={diffFrag.type === "addition"}
+            onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           >
             Addition
-          </div>
-          <div
-            // type="radio"
-            // id="deletion"
-            // name="diffType"
-            // value="deletion"
+          </input>
+          <input
+            type="radio"
+            id="deletion"
+            name="diffType"
+            value="deletion"
             className="btn btn-xs"
-            // data-title="deletion"
-            // checked={diffFrag.type === "deletion"}
-            // onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
+            data-title="deletion"
+            checked={diffFrag.type === "deletion"}
+            onChange={(e) => setDiffFrag((d) => ({ ...d, type: e.target.value as DiffType }))}
           >
             Deletion
-          </div>
+          </input>
         </div>
         <button
           className="btn-outline btn btn-primary btn-sm mr-2"
