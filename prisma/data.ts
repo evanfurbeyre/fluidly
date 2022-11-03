@@ -5,18 +5,23 @@ import { Prisma } from "@prisma/client"
  */
 const nate: Prisma.UserCreateInput = {
   name: "Nate F",
+  targetLang: "es",
+  nativeLang: "en",
 }
 
 const evan: Prisma.UserCreateInput = {
   name: "Evan F",
+  targetLang: "fr",
+  nativeLang: "en",
 }
 
 /**
  * Prompts
  */
 const prompt: Prisma.PromptCreateInput = {
-  prompt: "Como estas?",
-  language: "es",
+  en: "How are you?",
+  es: "Como estas?",
+  fr: "Comment ça va?",
 }
 
 /**

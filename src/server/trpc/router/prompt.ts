@@ -5,8 +5,9 @@ export const promptRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        prompt: z.string(),
-        language: z.string(),
+        en: z.string(),
+        es: z.string(),
+        fr: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
