@@ -16,12 +16,26 @@ const Cell = ({ children }: { children: React.ReactNode }) => {
 type AdminPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 type FilterType = "all" | "needs-submission" | "needs-correction"
 
+const getStatus = (hasAudio: boolean, hasCorrections: boolean) => {
+  if (!hasAudio) return "awaiting response"
+  if (hasAudio && !hasCorrections) return "awaiting correction"
+  if (hasAudio && hasCorrections) return "complete"
+  return "invalid"
+}
+
+const MILLIS_PER_HR = 3600000
+const getHoursFromNow = (ts: Date) => {
+  return Math.round((Date.now() - ts.getTime()) / MILLIS_PER_HR)
+}
+
 const Admin: NextPage<AdminPageProps> = (props) => {
   const [filter, setFilter] = useState<FilterType>("needs-correction")
   const [responses, setResponses] = useState(props.responses)
   const [prompts, setPrompts] = useState(props.prompts)
   const [users, setUsers] = useState(props.users)
   const { data: session } = useSession()
+
+  console.log("responses[0]:", responses[0])
 
   const deleteResponse = trpc.response.delete.useMutation({
     onSettled(data, error) {
@@ -76,11 +90,12 @@ const Admin: NextPage<AdminPageProps> = (props) => {
           <table className="table-compact table">
             <thead>
               <tr>
-                <Cell>Response</Cell>
+                <Cell> </Cell>
                 <Cell>User</Cell>
-                <Cell>Audio</Cell>
-                <Cell>Corrections</Cell>
+                <Cell>Status</Cell>
                 <Cell>Prompt</Cell>
+                <Cell>Hours Ready</Cell>
+                <Cell>Correcter</Cell>
               </tr>
             </thead>
             <tbody>
@@ -100,13 +115,13 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                         >
                           <XMarkIcon className="h-6 w-6" />
                         </button>
-                        <span>{resp.id}</span>
                       </div>
                     </Cell>
                     <Cell>{resp.user.name}</Cell>
-                    <Cell>{(!!resp.audio).toString()}</Cell>
-                    <Cell>{(!!resp.corrections?.length).toString()}</Cell>
+                    <Cell>{getStatus(!!resp.audioId, !!resp.corrections.length)}</Cell>
                     <Cell>{resp.prompt.prompt}</Cell>
+                    <Cell>{resp.audio && getHoursFromNow(resp.audio.createdAt)}</Cell>
+                    <Cell>{resp.corrector?.name}</Cell>
                   </tr>
                 </Link>
               ))}
@@ -297,6 +312,7 @@ export const getServerSideProps = async () => {
         audio: true,
         corrections: true,
         prompt: true,
+        corrector: true,
       },
     }),
     prisma.prompt.findMany(),

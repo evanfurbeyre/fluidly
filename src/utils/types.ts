@@ -6,6 +6,7 @@ export const responseWithRelations = Prisma.validator<Prisma.ResponseArgs>()({
     audio: true,
     prompt: true,
     feedback: true,
+    corrector: true,
     corrections: {
       include: {
         diff: true,
