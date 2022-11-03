@@ -169,7 +169,7 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
         <label className="mr-2">Prompt:</label>
         <select
           onChange={(e) => setSelectedPrompt(prompts.find(({ id }) => id === e.target.value))}
-          className="select-primary select select-sm"
+          className="select-primary select select-sm w-64 truncate"
           value={selectedPrompt?.id ?? ""}
         >
           {prompts.map(({ id, prompt }) => {
