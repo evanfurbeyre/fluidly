@@ -26,6 +26,15 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   const addResponseFeedbackText = trpc.response.addResponseFeedbackText.useMutation()
   const deleteFeedback = trpc.response.deleteFeedbackAudio.useMutation()
 
+  const submitDeleteFeedback = async (id: string) => {
+    deleteFeedback.mutate(
+      { id },
+      {
+        onSettled: refetchResponse,
+      },
+    )
+  }
+
   const submitCorrection = async (key: string) => {
     addCorrection.mutate(
       {
@@ -144,7 +153,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 className="btn-outline btn btn-primary btn-xs float-right mt-1"
-                onClick={() => deleteFeedback.mutate({ id: response.id })}
+                onClick={() => submitDeleteFeedback(response.id)}
               >
                 Delete feedback audio
               </button>
