@@ -24,6 +24,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   const addCorrection = trpc.correction.create.useMutation()
   const addResponseFeedback = trpc.response.addResponseFeedback.useMutation()
   const addResponseFeedbackText = trpc.response.addResponseFeedbackText.useMutation()
+  const deleteFeedback = trpc.response.deleteFeedbackAudio.useMutation()
 
   const submitCorrection = async (key: string) => {
     addCorrection.mutate(
@@ -83,7 +84,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   return (
     <div className="container mx-auto flex flex-col items-center justify-center p-6">
       <div className="flex w-full flex-col gap-4 sm:w-96">
-        <h1 className="w-full text-2xl">{response.prompt.prompt}</h1>
+        <h1 className="w-full text-center text-2xl">{response.prompt.prompt}</h1>
         {response.audio?.audioUrl && <Audio src={response.audio.audioUrl} />}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
           {(adminMode || response.corrections.length) && <h2 className="text-lg">Corrections</h2>}
@@ -92,14 +93,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn btn-primary btn-sm mr-4"
+                className="btn-outline btn-primary btn-sm btn mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextCorrection(true)}
-                className="btn-outline btn btn-primary btn-sm"
+                className="btn-outline btn-primary btn-sm btn"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -118,22 +119,66 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingFeedback(true)}
-                className="btn-outline btn btn-primary btn-sm mr-4"
+                className="btn-outline btn-primary btn-sm btn mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextFeedback(true)}
-                className="btn-outline btn btn-primary btn-sm"
+                className="btn-outline btn-primary btn-sm btn"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
             </div>
           )}
         </div>
-        {response.feedback?.audioUrl && <Audio src={response.feedback.audioUrl} />}
-        {!addingTextFeedback && <div>{feedbackText}</div>}
+        {response.feedback?.audioUrl && (
+          <div>
+            <Audio src={response.feedback.audioUrl} />
+            {adminMode && (
+              <button
+                type="button"
+                className="btn-outline btn-primary btn-xs btn float-right mt-1"
+                onClick={() => deleteFeedback.mutate({ id: response.id })}
+              >
+                Delete feedback audio
+              </button>
+            )}
+          </div>
+        )}
+        {!addingTextFeedback && <div className="text-center">{feedbackText}</div>}
+        {addingTextFeedback && (
+          <form className="flex w-full flex-col gap-2 pt-4">
+            <textarea
+              className="textarea-primary textarea w-full"
+              defaultValue={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                className="btn-outline btn-error btn-sm btn"
+                onClick={() => {
+                  setAddingTextFeedback(false)
+                  setFeedbackText("")
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary btn-sm btn"
+                onClick={() => {
+                  submitTextFeedback(feedbackText)
+                  setAddingTextFeedback(false)
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       {addingCorrection && (
@@ -154,37 +199,6 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
         <div className="fixed bottom-0 w-screen bg-white">
           <AudioInput onSubmit={submitFeedback} onCancel={() => setAddingFeedback(false)} />
         </div>
-      )}
-      {addingTextFeedback && (
-        <form className="flex w-full flex-col gap-2 pt-4">
-          <textarea
-            className="textarea-primary textarea w-full"
-            defaultValue={feedbackText}
-            onChange={(e) => setFeedbackText(e.target.value)}
-          />
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              className="btn-outline btn btn-error btn-sm"
-              onClick={() => {
-                setAddingTextFeedback(false)
-                setFeedbackText("")
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-              onClick={() => {
-                submitTextFeedback(feedbackText)
-                setAddingTextFeedback(false)
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </form>
       )}
     </div>
   )

@@ -67,4 +67,16 @@ export const correctionRouter = router({
         data: { diff: { createMany: { data: diff } } },
       })
     }),
+
+  deleteCorrection: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.correction.delete({
+        where: { id: input.id },
+      })
+    }),
 })

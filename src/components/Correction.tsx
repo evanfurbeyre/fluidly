@@ -1,5 +1,6 @@
 import { useContext, useState } from "react"
 import { AdminContext } from "../pages/_app"
+import { trpc } from "../utils/trpc"
 import { CorrectionWithRelations } from "../utils/types"
 import Audio from "./Audio"
 import DiffBlock from "./DiffBlock"
@@ -14,6 +15,9 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
   const { id, audio, diff } = correction
   const [addingDiff, setAddingDiff] = useState(false)
   const { adminMode } = useContext(AdminContext)
+  const deleteCorrection = trpc.correction.deleteCorrection.useMutation({
+    onSettled: refetchResponse,
+  })
 
   return (
     <div>
@@ -27,13 +31,22 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
       </div>
 
       {!addingDiff && adminMode && (
-        <button
-          type="button"
-          onClick={() => setAddingDiff(true)}
-          className="btn btn-primary btn-sm float-right mt-1"
-        >
-          Add text
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={() => setAddingDiff(true)}
+            className="btn-outline btn-primary btn-xs btn float-right mt-1"
+          >
+            Add text
+          </button>
+          <button
+            type="button"
+            onClick={() => deleteCorrection.mutate({ id })}
+            className="btn-outline btn-primary btn-xs btn float-right mt-1"
+          >
+            Delete correction
+          </button>
+        </>
       )}
 
       {addingDiff && (

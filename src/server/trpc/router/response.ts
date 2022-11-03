@@ -140,4 +140,15 @@ export const responseRouter = router({
         },
       })
     }),
+
+  deleteFeedbackAudio: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.response.update({
+        where: { id: input.id },
+        data: {
+          feedbackId: null,
+        },
+      })
+    }),
 })

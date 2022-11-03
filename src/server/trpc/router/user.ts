@@ -6,11 +6,14 @@ export const userRouter = router({
     .input(
       z.object({
         name: z.string(),
-        email: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return ctx.prisma.user.create({ data: input })
+      return ctx.prisma.user.create({
+        data: {
+          name: input.name,
+        },
+      })
     }),
 
   findUnique: publicProcedure

@@ -17,7 +17,7 @@ type AdminPageProps = InferGetServerSidePropsType<typeof getServerSideProps>
 type FilterType = "all" | "needs-submission" | "needs-correction"
 
 const Admin: NextPage<AdminPageProps> = (props) => {
-  const [filter, setFilter] = useState<FilterType>("all")
+  const [filter, setFilter] = useState<FilterType>("needs-correction")
   const [responses, setResponses] = useState(props.responses)
   const [prompts, setPrompts] = useState(props.prompts)
   const [users, setUsers] = useState(props.users)
@@ -61,15 +61,17 @@ const Admin: NextPage<AdminPageProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div>
-        <select
-          onChange={(e) => setFilter(e.target.value as FilterType)}
-          className="select-primary select select-sm my-5"
-          value={filter}
-        >
-          <option value="all">All</option>
-          <option value="needs-submission">Waiting for submission</option>
-          <option value="needs-correction">Waiting for corrections</option>
-        </select>
+        <div className="flex justify-center">
+          <select
+            onChange={(e) => setFilter(e.target.value as FilterType)}
+            className="select-primary select select-sm my-5"
+            value={filter}
+          >
+            <option value="all">All</option>
+            <option value="needs-submission">Waiting for submission</option>
+            <option value="needs-correction">Waiting for corrections</option>
+          </select>
+        </div>
         <div className="overflow-x-auto">
           <table className="table-compact table">
             <thead>
@@ -195,7 +197,6 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
 
 const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
   const [statusMessage, setStatusMessage] = useState({ color: "black", message: "" })
-  const [email, setEmail] = useState("")
   const [name, setName] = useState("")
 
   const createUser = trpc.user.create.useMutation({
@@ -218,22 +219,14 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
           value={name}
         />
       </span>
-      <span>
-        <label className="mr-2">Email:</label>
-        <input
-          onChange={(e) => setEmail(e.target.value)}
-          className="input-primary input input-sm"
-          value={email}
-        />
-      </span>
       <button
         className={`btn-primary btn-sm btn ${createUser.isLoading && "loading"}`}
         onClick={() => {
-          if (!email.trim() || !name.trim()) {
+          if (!name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
             return
           }
-          createUser.mutate({ email, name })
+          createUser.mutate({ name })
         }}
       >
         Create user
