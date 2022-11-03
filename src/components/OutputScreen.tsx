@@ -87,29 +87,33 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
         <h1 className="w-full text-center text-2xl">{response.prompt.prompt}</h1>
         {response.audio?.audioUrl && <Audio src={response.audio.audioUrl} />}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
-          {(adminMode || response.corrections.length) && <h2 className="text-lg">Corrections</h2>}
+          {adminMode || response.corrections.length ? (
+            <h2 className="text-lg">Corrections</h2>
+          ) : (
+            <></>
+          )}
           {adminMode && (
             <div>
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
             </div>
           )}
         </div>
-        {response.corrections.map((cor) => (
+        {response.corrections?.map((cor) => (
           <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
-        ))}
+        )) || <></>}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
           {(adminMode || response.feedback?.audioUrl || feedbackText) && (
             <h2 className="text-lg">Feedback</h2>
@@ -119,14 +123,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -139,7 +143,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
             {adminMode && (
               <button
                 type="button"
-                className="btn-outline btn-primary btn-xs btn float-right mt-1"
+                className="btn-outline btn btn-primary btn-xs float-right mt-1"
                 onClick={() => deleteFeedback.mutate({ id: response.id })}
               >
                 Delete feedback audio
@@ -158,7 +162,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="btn-outline btn-error btn-sm btn"
+                className="btn-outline btn btn-error btn-sm"
                 onClick={() => {
                   setAddingTextFeedback(false)
                   setFeedbackText("")
@@ -168,7 +172,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               </button>
               <button
                 type="button"
-                className="btn-primary btn-sm btn"
+                className="btn btn-primary btn-sm"
                 onClick={() => {
                   submitTextFeedback(feedbackText)
                   setAddingTextFeedback(false)
