@@ -32,12 +32,12 @@ const InputScreen = (props: Props) => {
   return (
     <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center">
       <div className="flex max-w-md flex-col gap-12">
-        <h1 className="text-center text-2xl">
+        <div className="flex flex-col items-center px-4">
           <span className="tooltip" data-tip={response.prompt[nativeLang]}>
-            <InformationCircleIcon className="float-right h-6 w-6 fill-gray-400 pb-2" />
-            {response.prompt[targetLang]}
+            <InformationCircleIcon className="h-4 w-4 fill-gray-400" />
           </span>
-        </h1>
+          <h1 className="text-center text-2xl">{response.prompt[targetLang]}</h1>
+        </div>
         {response.audio?.audioUrl && (
           <>
             <Audio src={response.audio.audioUrl} />
