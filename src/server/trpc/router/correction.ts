@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { publicProcedure, router } from "../trpc"
 import { env } from "../../../env/server.mjs"
+import { DiffType, Language } from "@prisma/client"
 
 export const correctionRouter = router({
   create: publicProcedure
@@ -8,7 +9,7 @@ export const correctionRouter = router({
       z.object({
         key: z.string(),
         responseId: z.string(),
-        language: z.string(),
+        language: z.nativeEnum(Language),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -33,7 +34,7 @@ export const correctionRouter = router({
         responseId: z.string(),
         diff: z.array(
           z.object({
-            type: z.enum(["original", "addition", "deletion"]),
+            type: z.nativeEnum(DiffType),
             content: z.string(),
           }),
         ),
@@ -54,7 +55,7 @@ export const correctionRouter = router({
         correctionId: z.string(),
         diff: z.array(
           z.object({
-            type: z.enum(["original", "addition", "deletion"]),
+            type: z.nativeEnum(DiffType),
             content: z.string(),
           }),
         ),

@@ -1,3 +1,4 @@
+import { Language } from "@prisma/client"
 import { z } from "zod"
 import { env } from "../../../env/server.mjs"
 import { responseWithRelations } from "../../../utils/types"
@@ -79,7 +80,7 @@ export const responseRouter = router({
       z.object({
         key: z.string(),
         responseId: z.string(),
-        language: z.string(),
+        language: z.nativeEnum(Language),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -107,7 +108,7 @@ export const responseRouter = router({
       z.object({
         responseId: z.string(),
         key: z.string(),
-        language: z.string(),
+        language: z.nativeEnum(Language),
       }),
     )
     .mutation(async ({ input, ctx }) => {

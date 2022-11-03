@@ -47,9 +47,11 @@ model User {
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
   name               String     @unique
-  email              String?
+  email              String?    @unique
   emailVerified      DateTime?
   image              String?
+  targetLang         Language?
+  nativeLang         Language?
   accounts           Account[]
   sessions           Session[]
   responses          Response[] @relation("user")
@@ -100,8 +102,10 @@ model Prompt {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  prompt    String
-  language  String
+  prompt    String?
+  en        String?
+  es        String?
+  fr        String?
   responses Response[]
 }
 
@@ -112,7 +116,7 @@ model Audio {
   bucket      String
   key         String
   audioUrl    String?
-  language    String
+  language    Language
   response    Response?    @relation("audio")
   feedback    Response?    @relation("feedback")
   corrections Correction[]
@@ -132,4 +136,10 @@ enum DiffType {
   original
   addition
   deletion
+}
+
+enum Language {
+  en
+  es
+  fr
 }

@@ -1,3 +1,5 @@
+import { InformationCircleIcon } from "@heroicons/react/24/solid"
+import { Language } from "@prisma/client"
 import { trpc } from "../utils/trpc"
 import { ResponseWithRelations } from "../utils/types"
 import Audio from "./Audio"
@@ -11,13 +13,15 @@ type Props = {
 const InputScreen = (props: Props) => {
   const { response, refetchResponse } = props
   const addResponseAudio = trpc.response.addResponseAudio.useMutation()
+  const targetLang = response.user.targetLang as Language
+  const nativeLang = response.user.nativeLang as Language
 
   const submitResponseAudio = async (key: string) => {
     addResponseAudio.mutate(
       {
         key: key,
         responseId: response.id,
-        language: response.prompt.language,
+        language: targetLang,
       },
       {
         onSettled: () => refetchResponse(),
@@ -28,7 +32,12 @@ const InputScreen = (props: Props) => {
   return (
     <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center">
       <div className="flex max-w-md flex-col gap-12">
-        <h1 className="text-center text-2xl">{response.prompt.prompt}</h1>
+        <div className="flex flex-col items-center px-4">
+          <span className="tooltip" data-tip={response.prompt[nativeLang]}>
+            <InformationCircleIcon className="h-4 w-4 fill-gray-400" />
+          </span>
+          <h1 className="text-center text-2xl">{response.prompt[targetLang]}</h1>
+        </div>
         {response.audio?.audioUrl && (
           <>
             <Audio src={response.audio.audioUrl} />
