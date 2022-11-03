@@ -106,7 +106,7 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit, onCanc
         </button>
       </div>
       {onCancel && (
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 z-10">
           <button className=" btn btn-ghost btn-square btn-xs" onClick={onCancel}>
             <XMarkIcon />
           </button>
