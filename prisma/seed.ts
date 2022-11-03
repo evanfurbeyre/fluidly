@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 async function main() {
   for (const user of seed.users) {
     await prisma.user.upsert({
-      where: { email: user.email },
+      where: { name: user.name },
       update: {},
       create: {
         ...user,

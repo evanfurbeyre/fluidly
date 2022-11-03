@@ -4,12 +4,10 @@ import { Prisma } from "@prisma/client"
  * Users
  */
 const nate: Prisma.UserCreateInput = {
-  email: "nmfurbearr2@gmail.com",
   name: "Nate F",
 }
 
 const evan: Prisma.UserCreateInput = {
-  email: "evan.furbeyre2@gmail.com",
   name: "Evan F",
 }
 
