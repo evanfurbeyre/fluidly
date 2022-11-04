@@ -83,7 +83,7 @@ model Response {
   feedback     Audio?       @relation("feedback", fields: [feedbackId], references: [id])
   feedbackId   String?      @unique
   feedbackText String?
-  corrector    User?        @relation("corrector", fields: [userId], references: [id], onDelete: Cascade, map: "corrector_fk")
+  corrector    User?        @relation("corrector", fields: [correctorId], references: [id], map: "corrector_fk")
   correctorId  String?
 }
 

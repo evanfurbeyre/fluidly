@@ -117,7 +117,11 @@ export const responseRouter = router({
       return await ctx.prisma.response.update({
         where: { id: input.responseId },
         data: {
-          correctorId: input.correctorId,
+          corrector: {
+            connect: {
+              id: input.correctorId,
+            },
+          },
           feedback: {
             create: {
               key: input.key,
