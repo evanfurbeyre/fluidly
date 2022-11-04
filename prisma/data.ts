@@ -5,14 +5,12 @@ import { Prisma } from "@prisma/client"
  */
 const nate: Prisma.UserCreateInput = {
   name: "Nate F",
-  targetLang: "es",
-  nativeLang: "en",
+  nativeLanguage: "en",
 }
 
 const evan: Prisma.UserCreateInput = {
   name: "Evan F",
-  targetLang: "fr",
-  nativeLang: "en",
+  nativeLanguage: "en",
 }
 
 /**

@@ -50,8 +50,7 @@ model User {
   email              String?    @unique
   emailVerified      DateTime?
   image              String?
-  targetLang         Language?
-  nativeLang         Language?
+  nativeLanguage     Language?  @default(value: en)
   accounts           Account[]
   sessions           Session[]
   responses          Response[] @relation("user")
@@ -73,6 +72,7 @@ model Response {
   id           String       @id @default(cuid())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  language     Language
   user         User         @relation("user", fields: [userId], references: [id], onDelete: Cascade, map: "user_fk")
   userId       String
   prompt       Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)

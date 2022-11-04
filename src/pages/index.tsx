@@ -1,5 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/24/solid"
-import { Prompt, User } from "@prisma/client"
+import { Language, Prompt, User } from "@prisma/client"
 import type { InferGetServerSidePropsType, NextPage } from "next"
 import { signIn, useSession } from "next-auth/react"
 import Head from "next/head"
@@ -57,7 +57,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
       <div className="flex flex-col items-center justify-center pt-12">
         <div className="w-24 text-center">
           <span className="">Admin?</span>
-          <button type="button" className="btn btn-ghost" onClick={() => signIn()}>
+          <button type="button" className="btn-ghost btn" onClick={() => signIn()}>
             Sign In
           </button>
         </div>
@@ -103,7 +103,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                     <Cell>
                       <div className="flex flex-row items-center">
                         <button
-                          className="btn-outline btn btn-error btn-square btn-xs mr-2"
+                          className="btn-outline btn-error btn-square btn-xs btn mr-2"
                           onClick={(e) => {
                             e.preventDefault()
                             if (window.confirm("Sure you want to delete this?")) {
@@ -117,7 +117,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                     </Cell>
                     <Cell>{resp.user.name}</Cell>
                     <Cell>{getStatus(!!resp.audioId, !!resp.corrections.length)}</Cell>
-                    <Cell>{resp.prompt.en}</Cell>
+                    <Cell>{resp.prompt[resp.language]}</Cell>
                     <Cell>{resp.audio && getHoursFromNow(resp.audio.createdAt)}</Cell>
                     <Cell>{resp.corrector?.name}</Cell>
                   </tr>
@@ -148,6 +148,7 @@ type CreateResponseFormProps = {
 
 const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormProps) => {
   const [selectedUser, setSelectedUser] = useState<User | undefined>(users[0])
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>("en")
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | undefined>(prompts[0])
 
   const createResponse = trpc.response.create.useMutation({
@@ -179,27 +180,47 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
         </select>
       </span>
       <span>
+        <label className="mr-2">Language:</label>
+        <select
+          onChange={(e) => setSelectedLanguage(e.target.value as Language)}
+          className="select-primary select select-sm  truncate"
+          value={selectedLanguage}
+        >
+          {Object.values(Language).map((lang) => {
+            return (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            )
+          })}
+        </select>
+      </span>
+      <span>
         <label className="mr-2">Prompt:</label>
         <select
           onChange={(e) => setSelectedPrompt(prompts.find(({ id }) => id === e.target.value))}
           className="select-primary select select-sm w-64 truncate"
           value={selectedPrompt?.id ?? ""}
         >
-          {prompts.map(({ id, en }) => {
+          {prompts.map((prompt) => {
             return (
-              <option key={id} value={id}>
-                {en}
+              <option key={prompt.id} value={prompt.id}>
+                {prompt[selectedLanguage]}
               </option>
             )
           })}
         </select>
       </span>
       <button
-        className={`btn btn-primary btn-sm ${createResponse.isLoading && "loading"}`}
+        className={`btn-primary btn-sm btn ${createResponse.isLoading && "loading"}`}
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
-          createResponse.mutate({ userId: selectedUser.id, promptId: selectedPrompt.id })
+          createResponse.mutate({
+            userId: selectedUser.id,
+            promptId: selectedPrompt.id,
+            language: selectedLanguage,
+          })
         }}
       >
         Create response
@@ -233,7 +254,7 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
         />
       </span>
       <button
-        className={`btn btn-primary btn-sm ${createUser.isLoading && "loading"}`}
+        className={`btn-primary btn-sm btn ${createUser.isLoading && "loading"}`}
         onClick={() => {
           if (!name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -291,7 +312,7 @@ const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) =
           value={frPrompt}
         />
         <button
-          className={`btn btn-primary btn-sm ml-2 ${createPrompt.isLoading && "loading"}`}
+          className={`btn-primary btn-sm btn ml-2 ${createPrompt.isLoading && "loading"}`}
           onClick={() => {
             if (!esPrompt.trim() || !enPrompt.trim() || !frPrompt.trim()) {
               setStatusMessage({ color: "red", message: "please fill out all languages" })

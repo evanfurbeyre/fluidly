@@ -12,6 +12,7 @@ async function main() {
         ...user,
         responses: {
           create: {
+            language: "en",
             audio: { create: seed.audio },
             prompt: { create: seed.prompt },
             corrections: {

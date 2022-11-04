@@ -11,6 +11,7 @@ export const responseRouter = router({
       z.object({
         userId: z.string(),
         promptId: z.string(),
+        language: z.nativeEnum(Language),
       }),
     )
     .mutation(({ input, ctx }) => {
