@@ -1,5 +1,6 @@
 import { MicrophoneIcon, PencilSquareIcon } from "@heroicons/react/24/solid"
 import { Language } from "@prisma/client"
+import { useSession } from "next-auth/react"
 import { useContext, useState } from "react"
 import { AdminContext } from "../pages/_app"
 import { trpc } from "../utils/trpc"
@@ -21,6 +22,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   const [addingTextFeedback, setAddingTextFeedback] = useState(false)
   const [addingTextCorrection, setAddingTextCorrection] = useState(false)
   const [feedbackText, setFeedbackText] = useState(response.feedbackText || "")
+  const { data: session } = useSession()
 
   const addCorrection = trpc.correction.create.useMutation()
   const addResponseFeedback = trpc.response.addResponseFeedback.useMutation()
@@ -37,11 +39,13 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   }
 
   const submitCorrection = async (key: string) => {
+    if (!session?.user?.id) throw new Error("unauthorized")
     addCorrection.mutate(
       {
         key: key,
         responseId: response.id,
         language: response.user.targetLang as Language,
+        correctorId: session.user.id,
       },
       {
         onSettled: () => {
@@ -53,11 +57,13 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   }
 
   const submitFeedback = async (key: string) => {
+    if (!session?.user?.id) throw new Error("unauthorized")
     addResponseFeedback.mutate(
       {
         key: key,
         responseId: response.id,
         language: response.user.targetLang as Language,
+        correctorId: session.user.id,
       },
       {
         onSettled: () => {
@@ -69,10 +75,12 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   }
 
   const submitTextFeedback = async (text: string) => {
+    if (!session?.user?.id) throw new Error("unauthorized")
     addResponseFeedbackText.mutate(
       {
         responseId: response.id,
         text,
+        correctorId: session.user.id,
       },
       {
         onSettled: () => {
@@ -107,14 +115,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextCorrection(true)}
-                className="btn-outline btn-primary btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -122,7 +130,12 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
           )}
         </div>
         {response.corrections?.map((cor) => (
-          <Correction key={cor.id} correction={cor} refetchResponse={refetchResponse} />
+          <Correction
+            key={cor.id}
+            responseId={response.id}
+            correction={cor}
+            refetchResponse={refetchResponse}
+          />
         )) || <></>}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
           {(adminMode || response.feedback?.audioUrl || feedbackText) && (
@@ -133,14 +146,14 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               <button
                 type="button"
                 onClick={() => setAddingFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn mr-4"
+                className="btn-outline btn btn-primary btn-sm mr-4"
               >
                 <MicrophoneIcon className="h-6 w-6" />
               </button>
               <button
                 type="button"
                 onClick={() => setAddingTextFeedback(true)}
-                className="btn-outline btn-primary btn-sm btn"
+                className="btn-outline btn btn-primary btn-sm"
               >
                 <PencilSquareIcon className="h-6 w-6" />
               </button>
@@ -153,7 +166,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
             {adminMode && (
               <button
                 type="button"
-                className="btn-outline btn-primary btn-xs btn float-right mt-1"
+                className="btn-outline btn btn-primary btn-xs float-right mt-1"
                 onClick={() => submitDeleteFeedback(response.id)}
               >
                 Delete feedback audio
@@ -172,7 +185,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="btn-outline btn-error btn-sm btn"
+                className="btn-outline btn btn-error btn-sm"
                 onClick={() => {
                   setAddingTextFeedback(false)
                   setFeedbackText("")
@@ -182,7 +195,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
               </button>
               <button
                 type="button"
-                className="btn-primary btn-sm btn"
+                className="btn btn-primary btn-sm"
                 onClick={() => {
                   submitTextFeedback(feedbackText)
                   setAddingTextFeedback(false)

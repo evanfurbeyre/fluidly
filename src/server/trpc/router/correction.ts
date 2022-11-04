@@ -10,6 +10,7 @@ export const correctionRouter = router({
         key: z.string(),
         responseId: z.string(),
         language: z.nativeEnum(Language),
+        correctorId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -26,11 +27,47 @@ export const correctionRouter = router({
           audioId: audio.id,
         },
       })
+      await ctx.prisma.response.update({
+        where: { id: input.responseId },
+        data: {
+          correctorId: input.correctorId,
+        },
+      })
     }),
 
   createTextOnlyCorrection: publicProcedure
     .input(
       z.object({
+        responseId: z.string(),
+        correctorId: z.string(),
+        diff: z.array(
+          z.object({
+            type: z.nativeEnum(DiffType),
+            content: z.string(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.correction.create({
+        data: {
+          responseId: input.responseId,
+          diff: { createMany: { data: input.diff } },
+        },
+      })
+      await ctx.prisma.response.update({
+        where: { id: input.responseId },
+        data: {
+          correctorId: input.correctorId,
+        },
+      })
+    }),
+
+  addDiffFragments: publicProcedure
+    .input(
+      z.object({
+        correctionId: z.string(),
+        correctorId: z.string(),
         responseId: z.string(),
         diff: z.array(
           z.object({
@@ -41,31 +78,16 @@ export const correctionRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.correction.create({
-        data: {
-          responseId: input.responseId,
-          diff: { createMany: { data: input.diff } },
-        },
-      })
-    }),
-
-  addDiffFragments: publicProcedure
-    .input(
-      z.object({
-        correctionId: z.string(),
-        diff: z.array(
-          z.object({
-            type: z.nativeEnum(DiffType),
-            content: z.string(),
-          }),
-        ),
-      }),
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { correctionId, diff } = input
-      return ctx.prisma.correction.update({
+      const { correctionId, diff, responseId, correctorId } = input
+      await ctx.prisma.correction.update({
         where: { id: correctionId },
         data: { diff: { createMany: { data: diff } } },
+      })
+      await ctx.prisma.response.update({
+        where: { id: responseId },
+        data: {
+          correctorId: correctorId,
+        },
       })
     }),
 

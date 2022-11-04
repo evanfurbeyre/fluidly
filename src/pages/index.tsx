@@ -35,8 +35,6 @@ const Admin: NextPage<AdminPageProps> = (props) => {
   const [users, setUsers] = useState(props.users)
   const { data: session } = useSession()
 
-  console.log("responses[0]:", responses[0])
-
   const deleteResponse = trpc.response.delete.useMutation({
     onSettled(data, error) {
       if (error) console.log("error:", error)
@@ -59,7 +57,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
       <div className="flex flex-col items-center justify-center pt-12">
         <div className="w-24 text-center">
           <span className="">Admin?</span>
-          <button type="button" className="btn-ghost btn" onClick={() => signIn()}>
+          <button type="button" className="btn btn-ghost" onClick={() => signIn()}>
             Sign In
           </button>
         </div>
@@ -105,7 +103,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                     <Cell>
                       <div className="flex flex-row items-center">
                         <button
-                          className="btn-outline btn-error btn-square btn-xs btn mr-2"
+                          className="btn-outline btn btn-error btn-square btn-xs mr-2"
                           onClick={(e) => {
                             e.preventDefault()
                             if (window.confirm("Sure you want to delete this?")) {
@@ -197,7 +195,7 @@ const CreateResponseForm = ({ onComplete, users, prompts }: CreateResponseFormPr
         </select>
       </span>
       <button
-        className={`btn-primary btn-sm btn ${createResponse.isLoading && "loading"}`}
+        className={`btn btn-primary btn-sm ${createResponse.isLoading && "loading"}`}
         disabled={!selectedUser?.id || !selectedPrompt?.id}
         onClick={() => {
           if (!selectedUser?.id || !selectedPrompt?.id) return
@@ -235,7 +233,7 @@ const CreateUserForm = ({ onComplete }: { onComplete: (_: User) => void }) => {
         />
       </span>
       <button
-        className={`btn-primary btn-sm btn ${createUser.isLoading && "loading"}`}
+        className={`btn btn-primary btn-sm ${createUser.isLoading && "loading"}`}
         onClick={() => {
           if (!name.trim()) {
             setStatusMessage({ color: "red", message: "email and name required" })
@@ -293,7 +291,7 @@ const CreatePromptForm = ({ onComplete }: { onComplete: (_: Prompt) => void }) =
           value={frPrompt}
         />
         <button
-          className={`btn-primary btn-sm btn ml-2 ${createPrompt.isLoading && "loading"}`}
+          className={`btn btn-primary btn-sm ml-2 ${createPrompt.isLoading && "loading"}`}
           onClick={() => {
             if (!esPrompt.trim() || !enPrompt.trim() || !frPrompt.trim()) {
               setStatusMessage({ color: "red", message: "please fill out all languages" })

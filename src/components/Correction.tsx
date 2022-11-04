@@ -7,11 +7,12 @@ import DiffBlock from "./DiffBlock"
 import DiffInput from "./DiffInput"
 
 type CorrectionProps = {
+  responseId: string
   correction: CorrectionWithRelations
   refetchResponse: () => void
 }
 
-const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
+const Correction = ({ correction, refetchResponse, responseId }: CorrectionProps) => {
   const { id, audio, diff } = correction
   const [addingDiff, setAddingDiff] = useState(false)
   const { adminMode } = useContext(AdminContext)
@@ -35,14 +36,14 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
           <button
             type="button"
             onClick={() => setAddingDiff(true)}
-            className="btn-outline btn-primary btn-xs btn float-right mt-1"
+            className="btn-outline btn btn-primary btn-xs float-right mt-1"
           >
             Add text
           </button>
           <button
             type="button"
             onClick={() => deleteCorrection.mutate({ id })}
-            className="btn-outline btn-primary btn-xs btn float-right mt-1"
+            className="btn-outline btn btn-primary btn-xs float-right mt-1"
           >
             Delete correction
           </button>
@@ -52,6 +53,7 @@ const Correction = ({ correction, refetchResponse }: CorrectionProps) => {
       {addingDiff && (
         <DiffInput
           correctionId={id}
+          responseId={responseId}
           onSubmit={() => {
             setAddingDiff(false)
             refetchResponse()

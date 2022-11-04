@@ -1,13 +1,14 @@
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { DiffFragment, DiffType } from "@prisma/client"
 import { NextPage } from "next"
+import { useSession } from "next-auth/react"
 import { useState } from "react"
 import { trpc } from "../utils/trpc"
 import DiffBlock from "./DiffBlock"
 
 type Props = {
   correctionId?: string
-  responseId?: string
+  responseId: string
   onSubmit: () => void
   onCancel?: () => void
 }
@@ -23,6 +24,7 @@ const defaultDiffFrag: DiffFrag = {
 }
 
 const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit, onCancel }) => {
+  const { data: session } = useSession()
   const addDiffFragments = trpc.correction.addDiffFragments.useMutation()
   const addTextCorrection = trpc.correction.createTextOnlyCorrection.useMutation()
 
@@ -93,10 +95,16 @@ const DiffInput: NextPage<Props> = ({ correctionId, responseId, onSubmit, onCanc
         )}
         <button
           onClick={() => {
+            if (!session?.user?.id) throw new Error("unauthroized")
             if (correctionId) {
-              addDiffFragments.mutate({ correctionId, diff: result })
+              addDiffFragments.mutate({
+                correctionId,
+                diff: result,
+                responseId,
+                correctorId: session.user.id,
+              })
             } else if (responseId) {
-              addTextCorrection.mutate({ diff: result, responseId })
+              addTextCorrection.mutate({ diff: result, responseId, correctorId: session.user.id })
             }
             setTimeout(onSubmit, 1000)
           }}

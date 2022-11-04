@@ -109,12 +109,14 @@ export const responseRouter = router({
         responseId: z.string(),
         key: z.string(),
         language: z.nativeEnum(Language),
+        correctorId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.response.update({
         where: { id: input.responseId },
         data: {
+          correctorId: input.correctorId,
           feedback: {
             create: {
               key: input.key,
@@ -131,6 +133,7 @@ export const responseRouter = router({
       z.object({
         responseId: z.string(),
         text: z.string(),
+        correctorId: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -138,6 +141,7 @@ export const responseRouter = router({
         where: { id: input.responseId },
         data: {
           feedbackText: input.text,
+          correctorId: input.correctorId,
         },
       })
     }),
