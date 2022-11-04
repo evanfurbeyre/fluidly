@@ -117,7 +117,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                     </Cell>
                     <Cell>{resp.user.name}</Cell>
                     <Cell>{getStatus(!!resp.audioId, !!resp.corrections.length)}</Cell>
-                    <Cell>{resp.prompt[resp.language]}</Cell>
+                    <Cell>{resp.prompt[resp.language ?? "en"]}</Cell>
                     <Cell>{resp.audio && getHoursFromNow(resp.audio.createdAt)}</Cell>
                     <Cell>{resp.corrector?.name}</Cell>
                   </tr>

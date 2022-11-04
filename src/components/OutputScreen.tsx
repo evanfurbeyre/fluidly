@@ -1,5 +1,4 @@
 import { MicrophoneIcon, PencilSquareIcon } from "@heroicons/react/24/solid"
-import { Language } from "@prisma/client"
 import { useSession } from "next-auth/react"
 import { useContext, useState } from "react"
 import { AdminContext } from "../pages/_app"
@@ -44,7 +43,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
       {
         key: key,
         responseId: response.id,
-        language: response.language,
+        language: response.language ?? "en",
         correctorId: session.user.id,
       },
       {
@@ -62,7 +61,7 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
       {
         key: key,
         responseId: response.id,
-        language: response.language,
+        language: response.language ?? "en",
         correctorId: session.user.id,
       },
       {
