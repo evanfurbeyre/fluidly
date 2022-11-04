@@ -5,12 +5,13 @@ import GoogleProvider from "next-auth/providers/google"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "../../../server/db/client"
 import { env } from "../../../env/server.mjs"
+import { ADMINS, TEACHERS } from "../../../constants"
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
     signIn({ user }) {
-      if (user.email && env.ADMIN_USER_EMAILS.includes(user.email)) {
+      if (user.email && [...ADMINS, ...TEACHERS].includes(user.email)) {
         return true
       }
       return env.NEXTAUTH_URL

@@ -5,6 +5,7 @@ import { signIn, useSession } from "next-auth/react"
 import Head from "next/head"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { ADMINS } from "../constants"
 import { prisma } from "../server/db/client"
 import { trpc } from "../utils/trpc"
 import { ResponseWithRelations } from "../utils/types"
@@ -128,15 +129,17 @@ const Admin: NextPage<AdminPageProps> = (props) => {
             </tbody>
           </table>
         </div>
-        <div className="mt-5 flex flex-col gap-3">
-          <CreateResponseForm
-            users={users}
-            prompts={prompts}
-            onComplete={(r) => setResponses((responses) => [...responses, r])}
-          />
-          <CreateUserForm onComplete={(u) => setUsers((users) => [...users, u])} />
-          <CreatePromptForm onComplete={(p) => setPrompts((prompts) => [...prompts, p])} />
-        </div>
+        {ADMINS.includes(session?.user?.email ?? "") && (
+          <div className="mt-5 flex flex-col gap-3">
+            <CreateResponseForm
+              users={users}
+              prompts={prompts}
+              onComplete={(r) => setResponses((responses) => [...responses, r])}
+            />
+            <CreateUserForm onComplete={(u) => setUsers((users) => [...users, u])} />
+            <CreatePromptForm onComplete={(p) => setPrompts((prompts) => [...prompts, p])} />
+          </div>
+        )}
       </div>
     </>
   )
