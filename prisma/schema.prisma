@@ -72,7 +72,7 @@ model Response {
   id           String       @id @default(cuid())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  language     Language?
+  language     Language
   user         User         @relation("user", fields: [userId], references: [id], onDelete: Cascade, map: "user_fk")
   userId       String
   prompt       Prompt       @relation(fields: [promptId], references: [id], onDelete: Cascade)
@@ -102,10 +102,9 @@ model Prompt {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  prompt    String?
-  en        String?
-  es        String?
-  fr        String?
+  en        String
+  es        String
+  fr        String
   responses Response[]
 }
 
