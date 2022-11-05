@@ -20,7 +20,7 @@ const InputScreen = (props: Props) => {
       {
         key: key,
         responseId: response.id,
-        language: response.language ?? "en",
+        language: response.language,
       },
       {
         onSettled: () => refetchResponse(),
@@ -35,7 +35,7 @@ const InputScreen = (props: Props) => {
           <span className="tooltip" data-tip={response.prompt[nativeLanguage]}>
             <InformationCircleIcon className="h-4 w-4 fill-gray-400" />
           </span>
-          <h1 className="text-center text-2xl">{response.prompt[response.language ?? "en"]}</h1>
+          <h1 className="text-center text-2xl">{response.prompt[response.language]}</h1>
         </div>
         {response.audio?.audioUrl && (
           <>
