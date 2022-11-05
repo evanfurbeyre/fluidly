@@ -1,3 +1,4 @@
+import { Language } from "@prisma/client"
 import { z } from "zod"
 import { publicProcedure, router } from "../trpc"
 
@@ -13,6 +14,24 @@ export const userRouter = router({
         data: {
           name: input.name,
         },
+      })
+    }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: z.object({
+          name: z.string().optional(),
+          needsWelcome: z.boolean().optional(),
+          nativeLanguage: z.nativeEnum(Language).optional(),
+        }),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      return ctx.prisma.user.update({
+        where: { id: input.id },
+        data: input.data,
       })
     }),
 

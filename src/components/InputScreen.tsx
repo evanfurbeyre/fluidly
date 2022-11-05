@@ -1,9 +1,12 @@
 import { InformationCircleIcon } from "@heroicons/react/24/solid"
 import { Language } from "@prisma/client"
+import { useState } from "react"
 import { trpc } from "../utils/trpc"
 import { ResponseWithRelations } from "../utils/types"
 import Audio from "./Audio"
 import AudioInput from "./AudioInput"
+import InstructionsModal from "./InstructionsModal"
+import WelcomeModal from "./WelcomeModal"
 
 type Props = {
   response: ResponseWithRelations
@@ -12,8 +15,11 @@ type Props = {
 
 const InputScreen = (props: Props) => {
   const { response, refetchResponse } = props
+  const [showWelcomeModal, setShowWelcomeModal] = useState(response.user.needsWelcome)
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false)
   const addResponseAudio = trpc.response.addResponseAudio.useMutation()
   const nativeLanguage = response.user.nativeLanguage as Language
+  const updateUser = trpc.user.update.useMutation()
 
   const submitResponseAudio = async (key: string) => {
     addResponseAudio.mutate(
@@ -50,6 +56,25 @@ const InputScreen = (props: Props) => {
         <div className="fixed bottom-0 w-screen bg-white">
           <AudioInput onSubmit={submitResponseAudio} />
         </div>
+      )}
+      {showWelcomeModal && (
+        <WelcomeModal
+          onClose={() => {
+            setShowWelcomeModal(false)
+            setShowInstructionsModal(true)
+          }}
+        />
+      )}
+      {showInstructionsModal && (
+        <InstructionsModal
+          onClose={() => {
+            setShowInstructionsModal(false)
+            updateUser.mutate({
+              id: response.userId,
+              data: { needsWelcome: false },
+            })
+          }}
+        />
       )}
     </div>
   )

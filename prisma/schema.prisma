@@ -49,6 +49,7 @@ model User {
   name               String     @unique
   email              String?    @unique
   emailVerified      DateTime?
+  needsWelcome       Boolean    @default(true)
   image              String?
   nativeLanguage     Language?  @default(value: en)
   accounts           Account[]
