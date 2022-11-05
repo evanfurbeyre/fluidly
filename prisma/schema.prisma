@@ -83,7 +83,7 @@ model Response {
   corrections  Correction[]
   feedback     Audio?       @relation("feedback", fields: [feedbackId], references: [id])
   feedbackId   String?      @unique
-  feedbackText String?
+  feedbackText String?      @db.Text
   corrector    User?        @relation("corrector", fields: [correctorId], references: [id], map: "corrector_fk")
   correctorId  String?
 }
@@ -103,9 +103,9 @@ model Prompt {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  en        String
-  es        String
-  fr        String
+  en        String     @db.Text
+  es        String     @db.Text
+  fr        String     @db.Text
   responses Response[]
 }
 
@@ -126,7 +126,7 @@ model DiffFragment {
   id           String      @id @default(cuid())
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
-  content      String
+  content      String      @db.Text
   type         DiffType
   correction   Correction? @relation(fields: [correctionId], references: [id], onDelete: Cascade)
   correctionId String?

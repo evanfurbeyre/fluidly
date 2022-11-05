@@ -99,8 +99,8 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
   }
 
   return (
-    <div className="container mx-auto flex flex-col items-center justify-center p-6">
-      <div className="flex w-full flex-col gap-4 sm:w-96">
+    <>
+      <div className="flex w-full grow flex-col gap-4 overflow-y-scroll p-6 sm:w-96">
         <h1 className="w-full text-center text-2xl">{response.prompt[response.language]}</h1>
         {response.audio?.audioUrl && <Audio src={response.audio.audioUrl} />}
         <div className="mt-5 flex w-full flex-row items-center justify-between">
@@ -208,12 +208,12 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
       </div>
 
       {addingCorrection && (
-        <div className="fixed bottom-0 w-screen bg-white">
+        <div className="w-screen grow-0 bg-white">
           <AudioInput onSubmit={submitCorrection} onCancel={() => setAddingCorrection(false)} />
         </div>
       )}
       {addingTextCorrection && (
-        <div className="fixed bottom-0 w-screen bg-white">
+        <div className="w-screen grow-0 bg-white">
           <DiffInput
             responseId={response.id}
             onSubmit={submitTextCorrection}
@@ -222,11 +222,11 @@ const OutputScreen = ({ response, refetchResponse }: Props) => {
         </div>
       )}
       {addingFeedback && (
-        <div className="fixed bottom-0 w-screen bg-white">
+        <div className="relative w-screen grow-0 bg-white">
           <AudioInput onSubmit={submitFeedback} onCancel={() => setAddingFeedback(false)} />
         </div>
       )}
-    </div>
+    </>
   )
 }
 

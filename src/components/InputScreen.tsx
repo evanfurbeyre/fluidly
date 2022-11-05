@@ -35,8 +35,8 @@ const InputScreen = (props: Props) => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center">
-      <div className="flex max-w-md flex-col gap-12">
+    <>
+      <div className="flex max-w-md grow flex-col justify-center gap-12">
         <div className="flex flex-col items-center px-4">
           <span className="tooltip" data-tip={response.prompt[nativeLanguage]}>
             <InformationCircleIcon className="h-4 w-4 fill-gray-400" />
@@ -53,7 +53,7 @@ const InputScreen = (props: Props) => {
         )}
       </div>
       {!response.audio?.audioUrl && (
-        <div className="fixed bottom-0 w-screen bg-white">
+        <div className="w-screen grow-0 bg-white">
           <AudioInput onSubmit={submitResponseAudio} />
         </div>
       )}
@@ -76,7 +76,7 @@ const InputScreen = (props: Props) => {
           }}
         />
       )}
-    </div>
+    </>
   )
 }
 

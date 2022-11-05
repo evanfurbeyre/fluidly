@@ -88,7 +88,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
   }, [recording, duration])
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 ring-4 ring-slate-300">
+    <div className="relative flex flex-col items-center justify-center p-4 ring-4 ring-slate-300">
       {!audioURL && (
         <>
           {recording && (
@@ -112,7 +112,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className="btn-outline btn-error btn w-28"
+              className="btn-outline btn btn-error w-28"
               onClick={handleReset}
             >
               Discard
@@ -120,7 +120,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
             <button
               type="button"
               disabled={recording || !audioURL}
-              className={`btn-primary btn w-28 ${loading && "loading"}`}
+              className={`btn btn-primary w-28 ${loading && "loading"}`}
               onClick={handleSubmit}
             >
               {success ? <CheckIcon className="h-6 w-6" /> : loading ? "" : "Submit"}
@@ -130,7 +130,7 @@ const AudioInput = ({ onSubmit, onCancel }: Props) => {
       )}
       {onCancel && (
         <div className="absolute top-1 right-1">
-          <button className="btn-ghost btn-square btn-xs btn" onClick={onCancel}>
+          <button className="btn btn-ghost btn-square btn-xs" onClick={onCancel}>
             <XMarkIcon />
           </button>
         </div>

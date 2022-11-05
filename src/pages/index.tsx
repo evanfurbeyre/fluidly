@@ -75,7 +75,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
         <meta name="description" content="language learning tool" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
+      <div className="flex w-full grow flex-col overflow-y-scroll">
         <div className="flex justify-center">
           <select
             onChange={(e) => setFilter(e.target.value as FilterType)}
@@ -87,7 +87,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
             <option value="needs-correction">Waiting for corrections</option>
           </select>
         </div>
-        <div className="overflow-x-auto">
+        <div className="w-full grow overflow-x-scroll">
           <table className="table-compact table">
             <thead>
               <tr>
@@ -119,7 +119,9 @@ const Admin: NextPage<AdminPageProps> = (props) => {
                       </div>
                     </Cell>
                     <Cell>{resp.user.name}</Cell>
-                    <Cell>{getStatus(!!resp.audioId, !!resp.corrections.length)}</Cell>
+                    <Cell>
+                      {getStatus(!!resp.audioId, !!resp.corrections.length || !!resp.feedbackText)}
+                    </Cell>
                     <Cell>{resp.prompt[resp.language]}</Cell>
                     <Cell>{resp.audio && getHoursFromNow(resp.audio.createdAt)}</Cell>
                     <Cell>{resp.corrector?.name}</Cell>
@@ -130,7 +132,7 @@ const Admin: NextPage<AdminPageProps> = (props) => {
           </table>
         </div>
         {ADMINS.includes(session?.user?.email ?? "") && (
-          <div className="mt-5 flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             <CreateResponseForm
               users={users}
               prompts={prompts}

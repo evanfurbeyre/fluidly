@@ -10,7 +10,7 @@ const NavBar = () => {
   if (!session) return <></>
 
   return (
-    <div className="navbar sticky top-0 z-50 border-b-2 bg-base-100">
+    <div className="navbar sticky z-50 border-b-2 bg-base-100">
       <div className="navbar-start">
         {session && (
           <div className="pl-2">
@@ -33,7 +33,7 @@ const NavBar = () => {
           </div>
         )}
       </div>
-      <button type="button" className="btn-outline btn-sm btn mr-4" onClick={() => signOut()}>
+      <button type="button" className="btn-outline btn btn-sm mr-4" onClick={() => signOut()}>
         Sign out
       </button>
     </div>
