@@ -1,10 +1,10 @@
 import { ArrowRightCircleIcon } from "@heroicons/react/24/solid"
 
-// const welcomeMessage =
-//   "We've built a tool we hope will help people improve their foreign language speaking skills, and we would love for you to try it out."
+const message1 =
+  "We’re glad you’re here. If you’re getting this, it means we’ve signed you up for a limited trial for a language learning tool we’ve been working on. Simply respond to the open-ended questions on our app, and we’ll provide quality feedback that you can learn from."
 
-const welcomeMessage =
-  "We're glad you're here. If you're getting this, it means we've signed you up for a limited trial of a language learning tool we've been working on. We think that people will be able to improve their foreign language speaking skills simply by responding to open-ended questions and receiving quality feedback. We would love for you to try our product for a short time and let us know what you think!"
+const message2 =
+  "We would love for you to try our product for a short time and let us know what you think!"
 
 type WelcomeModalProps = { onClose?: () => void }
 
@@ -21,7 +21,8 @@ const WelcomeModal = ({ onClose }: WelcomeModalProps) => {
             ✕
           </label>
           <h3 className="text-lg font-bold">{"Welcome!"}</h3>
-          <p className="py-4">{welcomeMessage}</p>
+          <p className="py-4">{message1}</p>
+          <p className="pb-2">{message2}</p>
           <div className="modal-action">
             <label htmlFor="my-modal" className="btn-primary btn" onClick={onClose}>
               See how it works!

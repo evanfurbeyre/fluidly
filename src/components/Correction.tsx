@@ -21,7 +21,7 @@ const Correction = ({ correction, refetchResponse, responseId }: CorrectionProps
   })
 
   return (
-    <div>
+    <div className="flex flex-col">
       <div className="rounded-2xl bg-stone-200">
         {audio?.audioUrl && <Audio src={audio.audioUrl} withOptions />}
         {diff.length > 0 && (
@@ -32,22 +32,22 @@ const Correction = ({ correction, refetchResponse, responseId }: CorrectionProps
       </div>
 
       {!addingDiff && adminMode && (
-        <>
-          <button
-            type="button"
-            onClick={() => setAddingDiff(true)}
-            className="btn-outline btn btn-primary btn-xs float-right mt-1"
-          >
-            Add text
-          </button>
+        <div className="mt-1 flex gap-1 self-end">
           <button
             type="button"
             onClick={() => deleteCorrection.mutate({ id })}
-            className="btn-outline btn btn-primary btn-xs float-right mt-1"
+            className="btn-outline btn-primary btn-xs btn"
           >
             Delete correction
           </button>
-        </>
+          <button
+            type="button"
+            onClick={() => setAddingDiff(true)}
+            className="btn-outline btn-primary btn-xs btn"
+          >
+            Add text
+          </button>
+        </div>
       )}
 
       {addingDiff && (
