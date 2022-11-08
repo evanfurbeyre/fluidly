@@ -12,7 +12,7 @@ import { withSuperjson } from "next-superjson"
  * @constraint {{import('next').NextConfig}}
  */
 function defineNextConfig(config) {
-  return withSuperjson(config)
+  return withSuperjson()(config)
 }
 
 export default defineNextConfig({
